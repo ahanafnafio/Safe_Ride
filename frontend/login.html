@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saferide Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1 class="logo">Saferide</h1>
+    <p class="subtitle">Welcome back. Log in to continue.</p>
+
+    <form id="loginForm" novalidate>
+      <div class="input-group">
+        <span class="input-icon">✉</span>
+        <input type="email" id="email" placeholder="Email" />
+      </div>
+      <p class="error-message" id="emailError"></p>
+
+      <div class="input-group password-group">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="password" placeholder="Password" />
+        <button type="button" class="toggle-password" id="togglePassword">Show</button>
+      </div>
+      <p class="error-message" id="passwordError"></p>
+
+      <button type="submit" class="login-btn">Log In</button>
+    </form>
+
+    <p class="footer-text">New here? <a href="register.html">Create an account</a></p>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>
