@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SafeRide Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="logo">SafeRide</h1>
+        <p class="subtitle">Create your account</p>
+
+        <form id="registerForm">
+
+            <div class="input-group">
+                <input type="text" id="firstName" placeholder="First Name" required>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="lastName" placeholder="Last Name" required>
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <p class="error-message" id="passwordError"></p>
+
+            <div class="input-group">
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            </div>
+            <p class="error-message" id="confirmPasswordError"></p>
+
+            <button type="submit" class="login-btn">Create Account</button>
+        </form>
+
+        <p class="footer-text">
+            Already have an account?
+            <a href="login.html">Login</a>
+        </p>
+    </div>
+
+    <script src="register.js"></script>
+</body>
+</html>
