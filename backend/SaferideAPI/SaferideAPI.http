@@ -1,0 +1,6 @@
+@SaferideAPI_HostAddress = http://localhost:5044
+
+GET {{SaferideAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
