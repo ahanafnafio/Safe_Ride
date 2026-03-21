@@ -34,6 +34,32 @@
             </div>
             <p class="error-message" id="confirmPasswordError"></p>
 
+            <div class="role-section">
+                <p class="role-label">Select Role</p>
+            
+                <div class="role-options">
+                    <label for="roleRider">
+                        <input type="radio" id="roleRider" name="userRole" value="Rider" checked>
+                        <span>Rider</span>
+                    </label>
+            
+                    <label for="roleDriver">
+                        <input type="radio" id="roleDriver" name="userRole" value="Driver">
+                        <span>Driver</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div id="driverFields" class="hidden">
+                <div class="input-group">
+                    <input type="text" id="licenseNumber" placeholder="Driver License Number">
+                </div>
+            
+                <div class="input-group">
+                    <input type="text" id="insuranceInfo" placeholder="Insurance Information">
+                </div>
+            </div>
+
             <button type="submit" class="login-btn">Create Account</button>
         </form>
 

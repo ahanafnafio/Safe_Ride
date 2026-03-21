@@ -33,3 +33,16 @@ document.getElementById("registerForm").addEventListener("submit", function(even
     alert("Account created successfully!");
 
 });
+
+const roleInputs = document.querySelectorAll('input[name="userRole"]');
+const driverFields = document.getElementById("driverFields");
+
+roleInputs.forEach((input) => {
+  input.addEventListener("change", function () {
+    if (this.value === "Driver") {
+      driverFields.classList.remove("hidden");
+    } else {
+      driverFields.classList.add("hidden");
+    }
+  });
+});

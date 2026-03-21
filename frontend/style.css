@@ -148,3 +148,46 @@ a:hover {
     transform: translateY(0);
   }
 }
+
+.role-section {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.role-label {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #444;
+  font-weight: 600;
+}
+
+.role-options {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.role-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.role-options input[type="radio"] {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  accent-color: #16a34a;
+  box-shadow: none;
+}
+
+.hidden {
+  display: none;
+}
