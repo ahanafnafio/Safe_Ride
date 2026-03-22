@@ -21,4 +21,9 @@ VALUES (?, ?, ?, ?, ?);
 
 *** Login Feature ***
 
-1. 
+1. Backend will check that user-entered email exists in database, and return the userID, passwordHash, and userRole to prepare for Login
+
+Query:
+SELECT userID, passwordHash, userRole
+FROM Users
+WHERE email = ?;
