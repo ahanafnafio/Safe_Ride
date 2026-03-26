@@ -1,4 +1,6 @@
-namespace SaferideAPI.Models
+using Microsoft.AspNetCore.Mvc.Razor;
+
+namespace Saferide.Models
 {
     public class Driver : User
     {

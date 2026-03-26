@@ -1,4 +1,5 @@
-namespace SaferideAPI.Models
+using Saferide.Models;
+namespace Saferide.Services
 {
     public class Session
     {

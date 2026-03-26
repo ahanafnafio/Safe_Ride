@@ -1,5 +1,7 @@
-using SaferideAPI.Models;
-namespace SaferideAPI.Services
+using System;
+using System.Collections.Generic;
+using Saferide.Models;
+namespace Saferide.Services
 {
     public class Authentication
     {

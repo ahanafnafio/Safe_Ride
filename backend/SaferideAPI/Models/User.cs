@@ -1,9 +1,12 @@
-namespace SaferideAPI.Models
+using System;
+
+namespace Saferide.Models
 {
     public class User
     {
         // Attributes
         private int userId;
+        public static int nextId = 1;
         private string firstName;
         private string lastName;
         private string email;
@@ -13,7 +16,7 @@ namespace SaferideAPI.Models
         // Constructor
         public User(int userId, string firstName, string lastName, string email, string passwordHash, string role)
         {
-            this.userId = userId;
+            this.userId = nextId++;
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;

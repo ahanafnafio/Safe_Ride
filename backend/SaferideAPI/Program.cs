@@ -1,5 +1,4 @@
-/*
-var builder = WebApplication.CreateBuilder(args);
+/*var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -23,11 +22,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
-*/
-/* ****** TESTING ****** */
-using SaferideAPI.Models;
-using SaferideAPI.Services;
+app.Run();*/
+
+/* ****** TESTING ******* */
+using Saferide.Models;
+using Saferide.Services;
 
 var auth = new Authentication();
 
@@ -36,11 +35,14 @@ Console.WriteLine("=== TESTING AUTH ===");
 // Register
 var user1 = auth.Register("Keaton", "Morales", "keaton@email.com", "1234");
 Console.WriteLine(user1 != null ? "User registered" : "Registration failed");
+Console.WriteLine($"User id: {user1?.GetUserId()}");
+
+var user3 = auth.Register("Keaton", "Morales", "keaton@gmail.com", "1234");
+Console.WriteLine($"User id: {user3?.GetUserId()}");
 
 // Duplicate register
 var user2 = auth.Register("Keaton", "Morales", "keaton@email.com", "1234");
 Console.WriteLine(user2 != null ? "Duplicate allowed" : "Duplicate blocked");
-
 // Login success
 var session1 = auth.Login("keaton@email.com", "1234");
 Console.WriteLine(session1 != null ? "Login success" : "Login failed");

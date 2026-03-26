@@ -1,4 +1,4 @@
-namespace SaferideAPI.Models
+namespace Saferide.Models
 {
     public class Rider : User
     {
