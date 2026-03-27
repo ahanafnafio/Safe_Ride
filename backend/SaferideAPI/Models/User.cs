@@ -14,7 +14,7 @@ namespace Saferide.Models
         private string role;
 
         // Constructor
-        public User(int userId, string firstName, string lastName, string email, string passwordHash, string role)
+        public User(string firstName, string lastName, string email, string passwordHash, string role)
         {
             this.userId = nextId++;
             this.firstName = firstName;

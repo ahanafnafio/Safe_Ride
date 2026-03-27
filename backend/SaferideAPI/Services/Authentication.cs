@@ -8,16 +8,14 @@ namespace Saferide.Services
         // Attributes
         private List<User> users; // Will be stored in database later
         private List<Session> sessions; // Will be stored in database later
-        private int nextUserId;
         // Constructor
         public Authentication()
         {
             users = new List<User>();
             sessions = new List<Session>();
-            nextUserId = 1;
         }
         // Methods
-        public User? Register(string firstName, string lastName, string email, string password) // '?' allows User to be null if already exists
+        public User? Register(string firstName, string lastName, string email, string password, string role) // '?' allows User to be null if already exists
         {
             foreach (User user in users)
             {
@@ -28,10 +26,16 @@ namespace Saferide.Services
             }
 
             string passwordHash = HashPassword(password);
-
-            User newUser = new Rider(nextUserId, firstName, lastName, email, passwordHash);
+            User newUser;
+            if (role == "Rider")
+            {
+                newUser = new Rider(firstName, lastName, email, passwordHash);
+            }
+            else
+            {
+                newUser = new Driver(firstName, lastName, email, passwordHash);
+            }
             users.Add(newUser);
-            nextUserId++;
 
             return newUser;
         }

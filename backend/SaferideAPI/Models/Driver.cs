@@ -9,7 +9,7 @@ namespace Saferide.Models
         private double avgRating;
         private int ratingCount;
         // Constructor
-        public Driver(int userId, string firstName, string lastName, string email, string passwordHash) : base(userId, firstName, lastName, email, passwordHash, "Driver")
+        public Driver(string firstName, string lastName, string email, string passwordHash) : base(firstName, lastName, email, passwordHash, "Driver")
         {
             available = true;
             avgRating = 0.0;
