@@ -59,16 +59,17 @@ namespace Saferide.Services
             return null;
         }
 
-        public void Logout(string sessionId)
+        public bool Logout(string sessionId) // was void
         {
             foreach (Session session in sessions)
             {
                 if (session.GetSessionId() == sessionId && session.IsValid())
                 {
                     session.Invalidate();
-                    return;
+                    return true;
                 }
             }
+            return false;
         }
 
         private string HashPassword(string password)

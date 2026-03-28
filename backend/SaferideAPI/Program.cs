@@ -1,11 +1,15 @@
-/*var builder = WebApplication.CreateBuilder(args);
+using Saferide.Services;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register Authentication as a service
+builder.Services.AddSingleton<Authentication>();
 
 var app = builder.Build();
 
@@ -18,14 +22,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Keep this for later
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();*/
+app.Run();
 
-/* ****** TESTING ******* */
-using Saferide.Models;
+/* ****** TESTING ******* 
 using Saferide.Services;
 
 var auth = new Authentication();
@@ -68,4 +72,4 @@ if (session3 != null)
 {
     auth.Logout(session3.GetSessionId());
     Console.WriteLine("Session active after logout: " + session3.IsValid());
-}
+}*/
