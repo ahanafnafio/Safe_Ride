@@ -43,10 +43,13 @@ namespace Saferide.Controllers
                 return Unauthorized("Invalid email or password.");
             }
 
-            return Ok("Login successful.");
+            return Ok(new 
+            {
+                sessionId = session.GetSessionId()
+            });
         }
 
-        [HttpPost("logout")]
+        [HttpPost("logout")] // Needs to be updated
         public IActionResult Logout([FromBody] LogoutRequest request)
         {
             bool success = _authentication.Logout(request.SessionId);
