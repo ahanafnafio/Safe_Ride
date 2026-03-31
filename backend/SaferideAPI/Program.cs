@@ -2,6 +2,18 @@ using Saferide.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS configuration to allow requests from the frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://127.0.0.1:5500")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -12,6 +24,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<Authentication>();
 
 var app = builder.Build();
+
+// CORS middleware
+app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
