@@ -87,4 +87,8 @@ if (session3 != null)
 {
     auth.Logout(session3.GetSessionId());
     Console.WriteLine("Session active after logout: " + session3.IsValid());
+<<<<<<< HEAD
 }*/
+//Adding this temporarily to see if the hashing works
+Console.WriteLine($"Stored Hash: {user1?.GetPasswordHash()}");  
+//(Impplemented the password hashing by including the BCrypt.Net-Next library and also add a print statement in program.cs to see the hashing)
