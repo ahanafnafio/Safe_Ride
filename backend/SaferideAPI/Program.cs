@@ -45,7 +45,15 @@ app.MapControllers();
 app.Run();
 
 //Adding this temporarily to see if the hashing works
-Console.WriteLine($"Stored Hash: {user1?.GetPasswordHash()}");  
+{
+    var testAuth = new Saferide.Services.Authentication();
+    var testUser = testAuth.Register("Test", "User", "hashcheck@email.com", "1234", "Rider");
+    if (testUser != null)
+    {
+        Console.WriteLine("\n[HASH TEST] User registered successfully.");
+        Console.WriteLine($"[HASH TEST] Stored BCrypt Hash: {testUser.GetPasswordHash()}\n");
+    }
+}
 //(Impplemented the password hashing by including the BCrypt.Net-Next library and also add a print statement in program.cs to see the hashing)
 
 /* ****** TESTING ******* 
