@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Saferide.Models;
+using BCrypt.Net;  //Adding this BCrypt library for hashing as using statement
+
 namespace Saferide.Services
 {
     public class Authentication
@@ -42,20 +44,19 @@ namespace Saferide.Services
 
         public Session? Login(string email, string password) // '?' allows Session to be null if login fails
         {
-            string passwordHash = HashPassword(password);
-
             foreach (User user in users)
             {
-                if (user.GetEmail().ToLower() == email.ToLower() &&
-                    user.GetPasswordHash() == passwordHash)
+                if (user.GetEmail().ToLower() == email.ToLower())
                 {
-                    string sessionId = Guid.NewGuid().ToString(); // global unique identifier
-                    Session newSession = new Session(sessionId, user.GetUserId());
-                    sessions.Add(newSession);
-                    return newSession;
+                    if (BCrypt.Net.BCrypt.Verify(password, user.GetPasswordHash())) // Useing BCrypt.Verify to check the plain text password against the stored hash
+                    {
+                        string sessionId = Guid.NewGuid().ToString();
+                        Session newSession = new Session(sessionId, user.GetUserId());
+                        sessions.Add(newSession);
+                        return newSession;
+                    }
                 }
             }
-
             return null;
         }
 
@@ -74,9 +75,7 @@ namespace Saferide.Services
 
         private string HashPassword(string password)
         {
-            // TEMPORARY
-            // Replace later with real hashing
-            return password;
+            return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12); //I think 12 is a good balance between security and speed
         }
     }
 }
