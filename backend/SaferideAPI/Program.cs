@@ -44,6 +44,10 @@ app.MapControllers();
 
 app.Run();
 
+//Adding this temporarily to see if the hashing works
+Console.WriteLine($"Stored Hash: {user1?.GetPasswordHash()}");  
+//(Impplemented the password hashing by including the BCrypt.Net-Next library and also add a print statement in program.cs to see the hashing)
+
 /* ****** TESTING ******* 
 using Saferide.Services;
 
@@ -89,6 +93,4 @@ if (session3 != null)
     Console.WriteLine("Session active after logout: " + session3.IsValid());
 <<<<<<< HEAD
 }*/
-//Adding this temporarily to see if the hashing works
-Console.WriteLine($"Stored Hash: {user1?.GetPasswordHash()}");  
-//(Impplemented the password hashing by including the BCrypt.Net-Next library and also add a print statement in program.cs to see the hashing)
+
