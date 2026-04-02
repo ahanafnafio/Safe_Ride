@@ -46,6 +46,20 @@ loginForm.addEventListener("submit", function (e) {
 
   console.log("Login submitted:", { email, password });
 
-  // Later this is where you'll connect to backend
-  alert("Login submitted successfully.");
+  // Later this is where you'll connect to backend - this is now in!!!
+  fetch("http://localhost:5044/api/auth/login", {
+    method: "POST",       // POST means sending something
+    headers: {
+      "Content-Type": "application/json"    // the body will be JSON
+    },
+    body: JSON.stringify({  // Make into backend-readable json
+      email: email,
+      password: password
+    })
+  })    // fetch returns a promise
+  .then(response => response.json())  // parse JSON
+  .then(data => {
+    console.log("test session ID:", data.sessionId);
+    localStorage.setItem("sessionId", data.sessionId); // save session ID in localStorage for later use (for keaton)
+  })
 });
