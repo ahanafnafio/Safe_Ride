@@ -1,0 +1,261 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(135deg, #f4f6f8, #edf7f0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  background: #ffffff;
+  width: 380px;
+  padding: 40px 30px;
+  border-radius: 18px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  animation: fadeUp 0.6s ease;
+}
+
+.logo {
+  margin: 0 0 8px;
+  font-size: 34px;
+  font-weight: 800;
+  color: #16a34a;
+  letter-spacing: 0.3px;
+}
+
+.subtitle {
+  margin: 0 0 26px;
+  color: #666;
+  font-size: 14px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.inputGroup {
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+input {
+  width: 100%;
+  padding: 14px 14px 14px 42px;
+  font-size: 15px;
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+.passwordGroup input {
+  padding-right: 72px;
+}
+
+.togglePassword {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.togglePassword:hover {
+  text-decoration: underline;
+}
+
+.errorMessage {
+  min-height: 18px;
+  margin: 0 0 10px;
+  color: #d93025;
+  font-size: 12px;
+}
+
+.loginBtn {
+  margin-top: 4px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #16a34a;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.loginBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(22, 163, 74, 0.22);
+}
+
+.loginBtn:active {
+  transform: translateY(0);
+}
+
+.footerText {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #555;
+}
+
+a {
+  color: #16a34a;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.buttonGroup .loginBtn {
+  flex: 1;
+  margin-top: 0;
+}
+
+.secondaryBtn {
+  background: #e5e7eb;
+  color: #333;
+}
+
+.secondaryBtn:hover {
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  opacity: 0.95;
+}
+
+.actionLink {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.dashboardContainer {
+  background: #ffffff;
+  width: 820px;
+  padding: 40px 40px 32px;
+  border-radius: 18px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.pageDescription {
+  margin: -10px 0 28px;
+  color: #7a7a7a;
+  font-size: 15px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 18px;
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 14px;
+  font-size: 28px;
+  text-align: center;
+}
+
+.card p {
+  margin: 8px 0;
+}
+
+.statusLine {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 18px;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-left: 8px;
+}
+
+.statusBadge.offline {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.statusBadge.online {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.rideCard {
+  background: #f8faf8;
+  border: 1px solid #e3e8e3;
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.rideCard p {
+  margin: 8px 0;
+}
+
+.rideAccepted {
+  border-color: #16a34a;
+  background: #ecfdf3;
+}
+
+.rideDeclined {
+  border-color: #d93025;
+  background: #fef2f2;
+}

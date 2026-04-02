@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Saferide Driver Dashboard</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+
+        <div class="container dashboardContainer">
+            <h1 class="logo">Saferide</h1>
+            <p class="subtitle">Driver Dashboard</p>
+            <p class="pageDescription">Manage your profile, status, and rides</p>
+
+            <div class="card">
+                <h2>Welcome, Driver!</h2>
+                <p class="statusLine">
+                    <strong>Status:</strong>
+                    <span id="driverStatus" class ="statusBadge offline">Offline</span>
+                </p>
+
+                <div class="buttonGroup">
+                    <button id="availableButton" class="loginBtn">Go Available</button>
+                    <button id="offlineButton" class="loginBtn secondaryBtn">Go Offline</button>
+                </div>
+            </div>
+
+            <div class="card" id="rideRequestCard">
+                <h2>Available Rides</h2>
+                
+                <div class="rideCard" id="ride1">
+                    <p><strong>Pickup:</strong> UNT Union</p>
+                    <p><strong>Dropoff:</strong> Iconic Village</p>
+                    <p><strong>Passenger:</strong> Alex M.</p>
+                    <p><strong>Notes:</strong>Blue Honda Civic ADB0023</p>
+                    <p><strong>Status:</strong> <span id="rideStatus1">Waiting for Driver Response</span></p>
+
+                    <div class="buttonGroup">
+                        <button id="acceptButton1" class="loginBtn">Accept</button>
+                        <button id="declineButton1" class="loginBtn secondaryBtn">Decline</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="rideCard" id="ride2">
+                <p><strong>Pickup:</strong> Willis Library</p>
+                <p><strong>Dropoff:</strong> Buccee's</p>
+                <p><strong>Passenger:</strong> Maya H.</p>
+                <p><strong>Notes:</strong> White Toyota Camry STR0068</p>
+                <p><strong>Status:</strong> <span id="rideStatus2">Waiting for Driver Response</span></p>
+
+                <div class="buttonGroup">
+                    <button id="acceptButton2" class="loginBtn">Accept</button>
+                    <button id="declineButton2" class="loginBtn secondaryBtn">Decline</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Quick Actions</h2>
+
+                <div class="buttonGroup">
+                    <a href="#" class="loginBtn actionLink">Ride History</a>
+                    <a href="#" class="loginBtn actionLink">Account Info</a>
+                </div>
+                <div class="buttonGroup">
+                    <a href="#" class="loginBtn actionLink">Current Ride</a>
+                    <a href="#" class="loginBtn secondaryBtn actionLink">Logout</a>
+                </div>
+            </div>
+        </div>
+
+        <script src="driverDB.js"></script>
+        
+    </body>
+</html>
