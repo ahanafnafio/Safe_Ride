@@ -1,6 +1,7 @@
 function logoutUser() {
     localStorage.removeItem('userRole');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('sessionID');
 
-    window.location.href = 'login.html';
+    window.location.href = '../../logout.html';
 }
