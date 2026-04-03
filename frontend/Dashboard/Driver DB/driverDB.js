@@ -1,18 +1,32 @@
-let driverStatus = document.getElementById("driverStatus");
+const driverStatus = document.getElementById("driverStatus");
+const accountStatus = document.getElementById("accountStatus");
 
-let availableButton = document.getElementById("availableButton");
-let offlineButton = document.getElementById("offlineButton");
+const availableButton = document.getElementById("availableButton");
+const offlineButton = document.getElementById("offlineButton");
+
+const themeToggle = document.getElementById("themeToggle");
+themeToggle.addEventListener("click", function() {
+    document.body.classList.toggle("darkMode");
+
+    if (document.body.classList.contains("darkMode")) {
+        themeToggle.textContent = "Light Mode";
+    } else {
+        themeToggle.textContent = "Dark Mode";
+    }
+});
 
 availableButton.addEventListener("click", function() {
-    driverStatus.textContent = "Available";
+    driverStatus.textContent = "Online";
     driverStatus.classList.remove("offline");
     driverStatus.classList.add("online");
+    accountStatus.textContent = "Online";
 });
 
 offlineButton.addEventListener("click", function() {
     driverStatus.textContent = "Offline";
     driverStatus.classList.remove("online");
     driverStatus.classList.add("offline");
+    accountStatus.textContent = "Offline";
 });
 
 let acceptButton1 = document.getElementById("acceptButton1");
