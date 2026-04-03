@@ -69,3 +69,15 @@ roleInputs.forEach((input) => {
     }
   });
 });
+
+const themeToggle = document.getElementById("themeToggle");
+
+themeToggle.addEventListener("click", function() {
+  document.body.classList.toggle("darkMode");
+
+  if (document.body.classList.contains("darkMode")) {
+    themeToggle.textContent = "Light Mode";
+  } else {
+    themeToggle.textContent = "Dark Mode";
+  }
+});
