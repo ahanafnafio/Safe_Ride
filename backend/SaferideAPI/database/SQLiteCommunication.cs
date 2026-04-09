@@ -25,7 +25,7 @@ public class SQLiteCommunication
         string query = dbQueries.EmailLookupQuery();
 
         // Connect to the SQLite Database file
-        using var connection = new SqliteConnection("Data Source=saferide.db");
+        using var connection = new SqliteConnection("Data Source=database/saferide.db");
         connection.Open();
 
         // Create a command object with the query and open connection
@@ -55,7 +55,7 @@ public class SQLiteCommunication
         string query = dbQueries.StoreNewUserQuery();
 
         // Connect to the SQLite Database file
-        using var connection = new SqliteConnection("Data Source=saferide.db");
+        using var connection = new SqliteConnection("Data Source=database/saferide.db");
         connection.Open();
 
         // Create a command object with the query and open connection
@@ -93,7 +93,7 @@ public class SQLiteCommunication
         string query = dbQueries.FetchUserQuery();
 
         // Connect to the SQLite Database file
-        using var connection = new SqliteConnection("Data Source=saferide.db");
+        using var connection = new SqliteConnection("Data Source=database/saferide.db");
         connection.Open();
 
         // Create a command object with the query and open connection
