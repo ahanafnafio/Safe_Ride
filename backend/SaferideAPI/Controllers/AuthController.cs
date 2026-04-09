@@ -78,7 +78,7 @@ namespace Saferide.Controllers
         public string Password { get; set; } = "";
     }
 
-    public class LogoutRequest
+    public class LogoutRequest // remove after ben adds logout.js
     {
         public string SessionId { get; set; } = "";
     }

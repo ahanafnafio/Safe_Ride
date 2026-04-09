@@ -35,7 +35,7 @@ namespace Saferide.Services
             }
             else
             {
-                newUser = new Driver(firstName, lastName, email, passwordHash);
+                newUser = new Driver(firstName, lastName, email, passwordHash); // need to add address, lat, lon
             }
             users.Add(newUser);
 
