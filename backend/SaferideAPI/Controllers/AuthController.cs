@@ -37,7 +37,7 @@ namespace Saferide.Controllers
         public IActionResult Login([FromBody] LoginRequest request)
         {
             var session = _authentication.Login(request.Email, request.Password);
-
+            
             if (session == null)
             {
                 return Unauthorized("Invalid email or password.");

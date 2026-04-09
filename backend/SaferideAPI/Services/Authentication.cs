@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Saferide.Models;
 using Saferide.Database;
-using System.Reflection.Metadata;
+using BCrypt.Net;  //Adding this BCrypt library for hashing as using statement
 
 namespace Saferide.Services
 {
@@ -25,18 +25,6 @@ namespace Saferide.Services
             string passwordHash = HashPassword(password);
             User newUser = new User(firstName, lastName, email, passwordHash, role);
 
-            /*
-            if (role == "Rider")
-            {
-                newUser = new Rider(firstName, lastName, email, passwordHash);
-            }
-            else
-            {
-                newUser = new Driver(firstName, lastName, email, passwordHash);
-            }
-            users.Add(newUser);
-            */
-
         // Check if email exists, return null if the database already has it
         bool emailExists = db.ExecuteEmailLookupQuery(newUser);
         if (emailExists == true)
@@ -56,9 +44,7 @@ namespace Saferide.Services
         }
 
         public Session? Login(string email, string password) // '?' allows Session to be null if login fails
-        {
-            string passwordHash = HashPassword(password);
-            
+        {   
             // Create temp User object to send email to database query
             User tempUser = new User();
             tempUser.SetEmail(email);
@@ -73,24 +59,11 @@ namespace Saferide.Services
                 return null;
             }
 
-            if (foundUser.GetPasswordHash() != passwordHash)
+            // Using BCrypt.Verify to check the plain text password against the stored hash
+            if (!BCrypt.Net.BCrypt.Verify(password, foundUser.GetPasswordHash()))
             {
                 return null;
             }
-
-            /*
-            foreach (User user in users)
-            {
-                if (user.GetEmail().ToLower() == email.ToLower() &&
-                    user.GetPasswordHash() == passwordHash)
-                {
-                    string sessionId = Guid.NewGuid().ToString(); // global unique identifier
-                    Session newSession = new Session(sessionId, user.GetUserId());
-                    sessions.Add(newSession);
-                    return newSession;
-                }
-            }
-            */
 
             string sessionId = Guid.NewGuid().ToString(); // global unique identifier
             Session newSession = new Session(sessionId, foundUser.GetUserId());
@@ -113,9 +86,7 @@ namespace Saferide.Services
 
         private string HashPassword(string password)
         {
-            // TEMPORARY
-            // Replace later with real hashing
-            return password;
+            return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12); //I think 12 is a good balance between security and speed
         }
     }
 }

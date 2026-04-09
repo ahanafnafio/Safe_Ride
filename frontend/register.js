@@ -30,9 +30,32 @@ document.getElementById("registerForm").addEventListener("submit", function(even
         return;
     }
 
-    alert("Account created successfully!");
+    const payload = {
+      firstName: document.getElementById("firstName").value.trim(),
+      lastName: document.getElementById("lastName").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      password: password,
+      role: document.querySelector('input[name="userRole"]:checked').value
+    };
 
-});
+    fetch("http://localhost:5044/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(async (res) => {
+        const text = await res.text();
+        if (!res.ok) {
+          throw new Error(text);
+        }
+        console.log("Success:", text);
+      })
+      .catch((err) => {
+        console.error("Error:", err.message);
+    });
+  });
 
 const roleInputs = document.querySelectorAll('input[name="userRole"]');
 const driverFields = document.getElementById("driverFields");
@@ -45,4 +68,16 @@ roleInputs.forEach((input) => {
       driverFields.classList.add("hidden");
     }
   });
+});
+
+const themeToggle = document.getElementById("themeToggle");
+
+themeToggle.addEventListener("click", function() {
+  document.body.classList.toggle("darkMode");
+
+  if (document.body.classList.contains("darkMode")) {
+    themeToggle.textContent = "Light Mode";
+  } else {
+    themeToggle.textContent = "Dark Mode";
+  }
 });
