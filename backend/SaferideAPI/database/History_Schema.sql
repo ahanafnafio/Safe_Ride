@@ -1,0 +1,2 @@
+ -- Script for Creating the history table in the Saferide Database
+ -- In this model
