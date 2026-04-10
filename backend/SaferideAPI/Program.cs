@@ -1,4 +1,4 @@
-using Saferide.Services;
+/*using Saferide.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +55,46 @@ app.Run();
     }
 }
 //(Impplemented the password hashing by including the BCrypt.Net-Next library and also add a print statement in program.cs to see the hashing)
+*/
+using Saferide.Models;
+using Saferide.Services;
 
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Create matchmaking system
+        MatchMaking matchmaking = new MatchMaking();
 
+        // Create drivers
+        Driver d1 = new Driver("John", "Doe", "john@test.com", "hash");
+        Driver d2 = new Driver("Jane", "Smith", "jane@test.com", "hash");
+        Driver d3 = new Driver("Ron", "Johnson", "ron@test.com", "hash");
+
+        // Put drivers online with locations
+        d1.GoOnline("Location A", 33.0, -97.0); // Denton-ish
+        d2.GoOnline("Location B", 32.7, -96.8); // Dallas-ish
+        d3.GoOnline("Location C", 32.8, -96.9);
+
+        // Add drivers to matchmaking
+        matchmaking.AddDriver(d1);
+        matchmaking.AddDriver(d2);
+        matchmaking.AddDriver(d3);
+
+        // Create a rider and ride
+        Rider rider = new Rider("Bob", "Lee", "bob@test.com", "hash");
+
+        Ride ride = rider.RequestRide(
+            "Pickup", 32.75, -96.8,   // near Dallas
+            "Dropoff", 33.0, -97.0,
+            "Test ride"
+        );
+
+        // Add ride (this triggers matchmaking)
+        matchmaking.AddRide(ride);
+
+        // Check result
+        Console.WriteLine("Ride Status: " + ride.GetStatus());
+    }
+}
 

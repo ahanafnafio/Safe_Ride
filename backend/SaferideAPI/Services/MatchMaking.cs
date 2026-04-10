@@ -72,6 +72,7 @@ namespace Saferide.Services
                 }
 
                 double distance = CalculateDistance(driverLocation.GetLat(), driverLocation.GetLon(), pickup.GetLat(), pickup.GetLon());
+                Console.WriteLine($"{d.GetFirstName()} is {distance} miles away from pickup location");
 
                 if (distance < minDistance)
                 {
@@ -79,6 +80,7 @@ namespace Saferide.Services
                     closestDriver = d;
                 }
             }
+            Console.WriteLine($"{closestDriver?.GetFirstName()} has been assigned.");
             return closestDriver;
         }
     }
