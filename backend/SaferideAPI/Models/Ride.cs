@@ -10,7 +10,7 @@ namespace Saferide.Models
         private Location pickup;
         private Location dropoff;
         private DateTime requestedAt;
-        private DateTime updatedAt; // needed?
+        private DateTime updatedAt;
         // riderId?
         private int vehicleId;
         private double ratingScore;
@@ -35,6 +35,10 @@ namespace Saferide.Models
         public int GetRideId()
         {
             return rideId;
+        }
+        public DateTime GetRequestTime()
+        {
+            return requestedAt;
         }
         public string GetStatus()
         {

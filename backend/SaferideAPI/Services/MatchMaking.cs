@@ -80,7 +80,6 @@ namespace Saferide.Services
                     closestDriver = d;
                 }
             }
-            Console.WriteLine($"{closestDriver?.GetFirstName()} has been assigned.");
             return closestDriver;
         }
     }
