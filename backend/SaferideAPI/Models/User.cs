@@ -6,7 +6,7 @@ namespace Saferide.Models
     {
         // Attributes
         private int userId;
-        //public static int nextId = 1;
+        public static int nextId = 1;
         private string firstName;
         private string lastName;
         private string email;
@@ -29,7 +29,7 @@ namespace Saferide.Models
         // Constructor for creating a new user before storing in database
         public User(string firstName, string lastName, string email, string passwordHash, string role)
         {
-            userId = 0;
+            userId = nextId++;
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;
