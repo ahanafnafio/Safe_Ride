@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using Saferide.Models;
-using BCrypt.Net;  //Adding this BCrypt library for hashing as using statement
+using BCrypt.Net;  // BCrypt library for hashing as using statement
 
 namespace Saferide.Services
 {
     public class Authentication
     {
         // Attributes
-        private List<User> users; // Will be stored in database later
-        private List<Session> sessions; // Will be stored in database later
+        private List<User> users; // Will be stored in database
+        private List<Session> sessions; // Will be stored in database
         // Constructor
         public Authentication()
         {
@@ -29,17 +29,19 @@ namespace Saferide.Services
 
             string passwordHash = HashPassword(password);
             User newUser;
-            if (role == "Rider")
+            if (role == "Rider") // Creating Rider
             {
                 newUser = new Rider(firstName, lastName, email, passwordHash);
+                // Database : add(newUser)
             }
-            else if (role == "Driver")
+            else if (role == "Driver") // Creating Driver
             {
-                newUser = new Driver(firstName, lastName, email, passwordHash); // need to add address, lat, lon
+                newUser = new Driver(firstName, lastName, email, passwordHash);
+                // Database : add(newUser)
             }
             else
             {
-                return null;
+                return null; // Incorrect choice
             }
             users.Add(newUser);
 
@@ -83,7 +85,7 @@ namespace Saferide.Services
 
         private string HashPassword(string password)
         {
-            return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12); //I think 12 is a good balance between security and speed
+            return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12); // 12 is a good balance between security and speed
         }
     }
 }
