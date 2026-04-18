@@ -50,8 +50,6 @@ namespace Saferide.Services
 
         public Session? Login(string email, string password) // '?' allows Session to be null if login fails
         {
-            Console.WriteLine($"Login attempt for email: {email}"); // Testing from Ben; for account creation/login confirmation
-            Console.WriteLine($"Users count: {users.Count}"); // Testing from Ben; for account creation/login confirmation
             foreach (User user in users)
             {
                 if (user.GetEmail().ToLower() == email.ToLower())
