@@ -16,7 +16,7 @@ namespace Saferide.Controllers
         }
 
 
-        // Real endpoint the frontend will call
+        // Endpoint frontend will call
         [HttpPost("route")]
         public async Task<IActionResult> ComputeRoute([FromBody] RouteRequest request)
         {

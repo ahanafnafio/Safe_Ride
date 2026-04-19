@@ -7,12 +7,14 @@ namespace Saferide.Services
     {
         private List<Driver> drivers;
         private List<Ride> rides;
+        private readonly RoutingService routingService;
 
-        // Construtor
-        public MatchMaking()
+        // Constructor
+        public MatchMaking(RoutingService routingService)
         {
             drivers = new List<Driver>();
             rides = new List<Ride>();
+            this.routingService = routingService;
         }
 
         // Methods
@@ -20,67 +22,44 @@ namespace Saferide.Services
         {
             drivers.Add(newDriver);
         }
-        public void AddRide(Ride newRide)
+        public async Task<RideAssignmentResult?> AddRide(Ride newRide)
         {
+            // Store the ride
             rides.Add(newRide);
 
-            Driver? driver = FindClosestDriver(newRide); // When added automatically finds the closest driver
+            // Find best driver using Google Route Matrix
+            DriverEtaResult? bestResult = await routingService.ComputeRouteMatrixAsync(drivers, newRide.GetPickup());
 
-            if (driver != null)
+            // If no driver found, return null
+            if (bestResult == null)
             {
-                newRide.SetStatus("Assigned");
-                driver.SetAvailability(false);
+                return null;
             }
-        }
 
-        private double DegreesToRadians(double degrees)
-        {
-            return degrees * Math.PI / 180.0;
-        }
-        private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
-        {
-            double earthRadiusMiles = 3958.8;
+            // Assign the driver
+            Driver driver = bestResult.Driver;
+            newRide.SetStatus("Assigned");
+            driver.SetAvailability(false);
 
-            double dLat = DegreesToRadians(lat2 - lat1);
-            double dLon = DegreesToRadians(lon2 - lon1);
+            // Compute the final trip route (pickup -> dropoff)
+            RouteResult? tripRoute = await routingService.ComputeRouteAsync(newRide.GetPickup(), newRide.GetDropoff());
 
-            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) + Math.Cos(DegreesToRadians(lat1)) * Math.Cos(DegreesToRadians(lat2)) * Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-
-            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-
-            return earthRadiusMiles * c;
-        }
-        public Driver? FindClosestDriver(Ride newRide)
-        {
-            Location pickup = newRide.GetPickup();
-
-            Driver? closestDriver = null;
-            double minDistance = double.MaxValue;
-
-            foreach (Driver d in drivers)
+            if (tripRoute == null)
             {
-                if (!d.IsAvailable())
-                {
-                    continue;
-                }
-
-                Location? driverLocation = d.GetCurrentLocation();
-
-                if (driverLocation == null)
-                {
-                    continue;
-                }
-
-                double distance = CalculateDistance(driverLocation.GetLat(), driverLocation.GetLon(), pickup.GetLat(), pickup.GetLon());
-                Console.WriteLine($"{d.GetFirstName()} is {distance} miles away from pickup location");
-
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestDriver = d;
-                }
+                return null;
             }
-            return closestDriver;
+
+            // Return assignment + route info
+            return new RideAssignmentResult
+            {
+                RideStatus = newRide.GetStatus(),
+                DriverFirstName = driver.GetFirstName(),
+                DriverLastName = driver.GetLastName(),
+                DriverEtaSeconds = bestResult.DurationSeconds,
+                RouteDuration = tripRoute.Duration ?? "",
+                RouteDistanceMeters = tripRoute.DistanceMeters,
+                EncodedPolyline = tripRoute.EncodedPolyline ?? ""
+            };
         }
     }
 }

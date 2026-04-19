@@ -105,6 +105,139 @@ namespace Saferide.Services
                 EncodedPolyline = route.Polyline?.EncodedPolyline
             };
         }
+        public async Task<DriverEtaResult?> ComputeRouteMatrixAsync(List<Driver> drivers, Location pickup)
+        {
+            // Only consider drivers who are available and have a current location
+            var availableDrivers = drivers
+                .Where(d => d.IsAvailable() && d.GetCurrentLocation() != null)
+                .ToList();
+
+            // If no valid drivers exist, return null
+            if (availableDrivers.Count == 0)
+            {
+                return null;
+            }
+
+            // Google Route Matrix endpoint
+            string url = "https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix";
+
+            // Build the list of origins from all available drivers
+            var origins = availableDrivers.Select(d => new
+            {
+                waypoint = new
+                {
+                    location = new
+                    {
+                        latLng = new
+                        {
+                            latitude = d.GetCurrentLocation()!.GetLat(),
+                            longitude = d.GetCurrentLocation()!.GetLon()
+                        }
+                    }
+                }
+            }).ToList();
+
+            // We only have one destination: the rider's pickup location
+            var destinations = new[]
+            {
+                new
+                {
+                    waypoint = new
+                    {
+                        location = new
+                        {
+                            latLng = new
+                            {
+                                latitude = pickup.GetLat(),
+                                longitude = pickup.GetLon()
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Build JSON request body
+            var requestBody = new
+            {
+                origins = origins,
+                destinations = destinations,
+                travelMode = "DRIVE",
+                routingPreference = "TRAFFIC_AWARE"
+            };
+
+            // Convert request body to JSON
+            var json = JsonSerializer.Serialize(requestBody);
+
+            // Create HTTP request
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+            // Attach JSON body
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Add API key
+            request.Headers.Add("X-Goog-Api-Key", _apiKey);
+
+            // Ask only for the fields we need
+            request.Headers.Add("X-Goog-FieldMask", "originIndex,destinationIndex,duration,distanceMeters");
+
+            // Send request to Google
+            var response = await _httpClient.SendAsync(request);
+
+            // Read response body as text
+            var responseText = await response.Content.ReadAsStringAsync();
+
+            // Throw if Google returns an error
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Route Matrix error: {response.StatusCode} - {responseText}");
+            }
+
+            // ComputeRouteMatrix returns a JSON array of matrix elements
+            var elements = JsonSerializer.Deserialize<List<RouteMatrixElementDto>>(
+                responseText,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+
+            if (elements == null || elements.Count == 0)
+            {
+                return null;
+            }
+
+            DriverEtaResult? bestResult = null;
+
+            foreach (var element in elements)
+            {
+                // Skip bad origin indexes just in case
+                if (element.OriginIndex < 0 || element.OriginIndex >= availableDrivers.Count)
+                {
+                    continue;
+                }
+
+                // Parse Google duration like "420s" into an integer number of seconds
+                int durationSeconds = 0;
+                if (!string.IsNullOrEmpty(element.Duration))
+                {
+                    durationSeconds = (int)Math.Round(
+                        double.Parse(element.Duration.Replace("s", ""))
+                    );
+                }
+
+                var candidate = new DriverEtaResult
+                {
+                    Driver = availableDrivers[element.OriginIndex],
+                    DurationSeconds = durationSeconds,
+                    DistanceMeters = element.DistanceMeters
+                };
+
+                // Keep the smallest ETA
+                if (bestResult == null || candidate.DurationSeconds < bestResult.DurationSeconds)
+                {
+                    bestResult = candidate;
+                }
+            }
+
+            return bestResult;
+        }
     }
 
     // Clean result returned to app
@@ -131,5 +264,22 @@ namespace Saferide.Services
     public class PolylineDto
     {
         public string? EncodedPolyline { get; set; }
+    }
+
+    // Represents one driver's ETA result from the matrix call
+    public class DriverEtaResult
+    {
+        public Driver Driver { get; set; } = null!;
+        public int DurationSeconds { get; set; }
+        public int DistanceMeters { get; set; }
+    }
+
+    // Matches one element returned by Google Route Matrix
+    public class RouteMatrixElementDto
+    {
+        public int OriginIndex { get; set; }
+        public int DestinationIndex { get; set; }
+        public string? Duration { get; set; }
+        public int DistanceMeters { get; set; }
     }
 }

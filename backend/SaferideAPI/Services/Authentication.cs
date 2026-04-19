@@ -19,6 +19,7 @@ namespace Saferide.Services
         // Methods
         public User? Register(string firstName, string lastName, string email, string password, string role) // '?' allows User to be null if already exists
         {
+            // Database: Search through current riders / drivers depending on role
             foreach (User user in users)
             {
                 if (user.GetEmail().ToLower() == email.ToLower())

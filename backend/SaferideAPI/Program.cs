@@ -22,6 +22,7 @@ builder.Services.AddSwaggerGen();
 
 // Allows RoutingService
 builder.Services.AddHttpClient<RoutingService>();
+builder.Services.AddSingleton<MatchMaking>();
 
 // Register Authentication as a service
 builder.Services.AddSingleton<Authentication>();
