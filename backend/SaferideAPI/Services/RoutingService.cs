@@ -26,6 +26,8 @@ namespace Saferide.Services
         // async means to define an asynchronous method that can run without blocking the main thread
         public async Task<RouteResult?> ComputeRouteAsync(Location origin, Location destination)
         {
+            Console.WriteLine("Google API called: Compute Route");
+            
             // Google Routes API endpoint
             string url = "https://routes.googleapis.com/directions/v2:computeRoutes";
 
@@ -107,6 +109,8 @@ namespace Saferide.Services
         }
         public async Task<DriverEtaResult?> ComputeRouteMatrixAsync(List<Driver> drivers, Location pickup)
         {
+            Console.WriteLine("Google API called: Route Matrix");
+
             // Only consider drivers who are available and have a current location
             var availableDrivers = drivers
                 .Where(d => d.IsAvailable() && d.GetCurrentLocation() != null)
