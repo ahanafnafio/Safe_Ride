@@ -1,73 +1,108 @@
 using System;
 using System.Collections.Generic;
 using Saferide.Models;
-using BCrypt.Net;  // BCrypt library for hashing as using statement
+using Saferide.Database;
+using BCrypt.Net;
 
 namespace Saferide.Services
 {
     public class Authentication
     {
         // Attributes
-        private List<User> users; // Will be stored in database
         private List<Session> sessions; // Will be stored in database
+        private SQLiteCommunication db;
+
         // Constructor
         public Authentication()
         {
-            users = new List<User>();
             sessions = new List<Session>();
+            db = new SQLiteCommunication();
         }
+
+
         // Methods
         public User? Register(string firstName, string lastName, string email, string password, string role) // '?' allows User to be null if already exists
         {
-            // Database: Search through current riders / drivers depending on role
-            foreach (User user in users)
+            // Search for email in database
+            if (db.EmailExistsAnywhere(email))
             {
-                if (user.GetEmail().ToLower() == email.ToLower())
-                {
-                    return null; // email already exists
-                }
+                return null;    // if true, email already exists, don't return a User object
             }
 
+            // Hash the raw password before registering
             string passwordHash = HashPassword(password);
-            User newUser;
+
             if (role == "Rider") // Creating Rider
             {
-                newUser = new Rider(firstName, lastName, email, passwordHash);
-                // Database : add(newUser)
+                Rider newRider = new Rider(firstName, lastName, email, passwordHash);
+                
+                // Attempt to store rider object, return null if failed
+                if (!db.ExecuteStoreNewRider(newRider))
+                {
+                    return null;
+                }
+
+                return newRider;
             }
+
             else if (role == "Driver") // Creating Driver
             {
-                newUser = new Driver(firstName, lastName, email, passwordHash);
-                // Database : add(newUser)
+                Driver newDriver = new Driver(firstName, lastName, email, passwordHash);
+                
+                // Attempt to store driver object, return null if failed
+                if (!db.ExecuteStoreNewDriver(newDriver))
+                {
+                    return null;
+                }
+
+                return newDriver;
             }
+
             else
             {
                 return null; // Incorrect choice
             }
-            users.Add(newUser);
-
-            return newUser;
         }
 
         public Session? Login(string email, string password) // '?' allows Session to be null if login fails
         {
-            foreach (User user in users)
+            // Fetch Rider, could return null
+            Rider? foundRider = db.ExecuteFetchRider(email);
+            Driver? foundDriver = db.ExecuteFetchDriver(email);
+
+            // If there was a match in Rider table, verify password
+            // --> if successful, login worked, and a session is created
+            if (foundRider != null)
             {
-                if (user.GetEmail().ToLower() == email.ToLower())
+                if (BCrypt.Net.BCrypt.Verify(password, foundRider.GetPasswordHash()))
                 {
-                    if (BCrypt.Net.BCrypt.Verify(password, user.GetPasswordHash())) // Useing BCrypt.Verify to check the plain text password against the stored hash
-                    {
-                        Console.WriteLine("Password match, login successful.");
-                        string sessionId = Guid.NewGuid().ToString();
-                        Session newSession = new Session(sessionId, user.GetUserId());
-                        sessions.Add(newSession);
-                        return newSession;
-                    }
+                    string sessionId = Guid.NewGuid().ToString();
+                    Session newSession = new Session(sessionId, foundRider.GetUserId());
+                    sessions.Add(newSession);
+                    return newSession;
                 }
+
+                return null;    // Return null if password did not match
             }
-            Console.WriteLine("No password match");
-            return null;
+
+            // If there was a match in Driver table, verify password
+            // --> if successful, login worked, and a session is created
+            if (foundDriver != null)
+            {
+                if (BCrypt.Net.BCrypt.Verify(password, foundDriver.GetPasswordHash()))
+                {
+                    string sessionId = Guid.NewGuid().ToString();
+                    Session newSession = new Session(sessionId, foundDriver.GetUserId());
+                    sessions.Add(newSession);
+                    return newSession;
+                }
+
+                return null;    // Return null if password did not match
+            }
+
+            return null;    // Return null if both fetches were unsuccessful
         }
+    
 
         public bool Logout(string sessionId) // was void
         {

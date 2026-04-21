@@ -1,3 +1,4 @@
+using Saferide.Database;
 using Saferide.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,9 @@ builder.Services.AddSingleton<MatchMaking>();
 builder.Services.AddSingleton<Authentication>();
 
 var app = builder.Build();
+
+// Create database tables at startup if they don't exist on machine that runs this project
+DatabaseInitializer.Initialize();
 
 // CORS middleware
 app.UseCors("AllowFrontend");

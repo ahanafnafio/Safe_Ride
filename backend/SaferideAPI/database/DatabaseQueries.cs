@@ -2,30 +2,58 @@ namespace Saferide.Database;
 
 public class DatabaseQueries
 {
-    // After user enters a valid email address, need to verify there's not an entry in the database with that email already
-    public string EmailLookupQuery()
+    // Check whether email exists in Riders table
+    public string LookupRiderEmail()
     {
         return @"  
-                SELECT userID FROM Users
+                SELECT riderID FROM Riders
                 WHERE email = $email;
                 ";
     }
 
-    // If email is unregistered, need to store the input in the database
-    public string StoreNewUserQuery()
+    // Check whether email exists in Drivers table
+    public string LookupDriverEmail()
     {
-        return @" 
-                INSERT INTO Users (firstName, lastName, email, passwordHash, userRole)
-                VALUES ($firstName, $lastName, $email, $passwordHash, $userRole);
+        return @"  
+                SELECT driverID FROM Drivers
+                WHERE email = $email;
                 ";
     }
 
-    // check that user-entered email exists in database, and return the userID, passwordHash, and userRole
-    public string FetchUserQuery()
+    // Store new user in Riders table
+    public string StoreNewRider()
+    {
+        return @" 
+                INSERT INTO Riders (firstName, lastName, email, passwordHash)
+                VALUES ($firstName, $lastName, $email, $passwordHash);
+                ";
+    }
+
+    // Store new user in Drivers table
+    public string StoreNewDriver()
+    {
+        return @" 
+                INSERT INTO Drivers (firstName, lastName, email, passwordHash)
+                VALUES ($firstName, $lastName, $email, $passwordHash);
+                ";
+    }
+
+    // Fetch stored Rider data
+    public string FetchRider()
     {
         return @"
-                SELECT userID, passwordHash, userRole
-                FROM Users
+                SELECT riderID, firstName, lastName, email, passwordHash
+                FROM Riders
+                WHERE email = $email;
+                ";
+    }
+
+    // Fetch stored Driver data
+    public string FetchDriver()
+    {
+        return @"
+                SELECT driverID, firstName, lastName, email, passwordHash
+                FROM Drivers
                 WHERE email = $email;
                 ";
     }
