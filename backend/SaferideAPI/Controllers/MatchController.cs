@@ -52,6 +52,10 @@ namespace Saferide.Controllers
             Location pickup = new Location(request.PickupAddress, request.PickupLat, request.PickupLon);
             Location dropoff = new Location(request.DropoffAddress, request.DropoffLat, request.DropoffLon);
 
+            // Should call Rider.RequestRide( all parameters) to verify vehicleId and will return a Ride object
+            // Ride ride = Rider.RequestRide( ... )
+            // var result = await _matchMaking.AddRide(ride);
+
             Ride ride = new Ride(
                 pickup,
                 dropoff,

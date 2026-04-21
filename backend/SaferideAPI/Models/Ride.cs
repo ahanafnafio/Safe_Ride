@@ -4,7 +4,7 @@ namespace Saferide.Models
     {
         // Attributes
         private static int nextRideId = 1;
-        private int rideId; //db make?
+        private int rideId; //db make
         private string status;
         private string notes;
         private Location pickup;
@@ -62,7 +62,7 @@ namespace Saferide.Models
         }
         public void Cancel()
         {
-            // Come back (might need to be in the Rider class)
+            // Come back
             status = "Cancelled";
         }
         public bool IsRateable()
