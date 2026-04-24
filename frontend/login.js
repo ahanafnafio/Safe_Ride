@@ -60,6 +60,7 @@ loginForm.addEventListener("submit", function (e) {
   .then(response => response.json())  // parse JSON
   .then(data => {
     console.log("test session ID:", data.sessionId);
-    localStorage.setItem("sessionId", data.sessionId); // save session ID in localStorage for later use (for keaton)
+    localStorage.setItem("sessionId", data.sessionId);
+    localStorage.setItem("firstName", data.firstName); 
   })
 });
