@@ -86,5 +86,61 @@ namespace Saferide.Services
         {
             return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12); // 12 is a good balance between security and speed
         }
+
+        public Rider? GetRiderBySessionId(string sessionId)
+        {
+            int? tempUserId = null;
+
+            // Find sessionId
+            foreach (Session s in sessions)
+            {
+                if (s.GetSessionId() == sessionId && s.IsValid())
+                {
+                    tempUserId = s.GetUserId();
+                    break;
+                }
+            }
+
+            if (tempUserId == null)
+            {
+                return null;
+            }
+            // Now find the rider object associated with it
+            foreach (User u in users)
+            {
+                if (u.GetUserId() == tempUserId && u is Rider rider)
+                {
+                    return rider;
+                }
+            }
+            return null;
+        }
+        public Driver? GetDriverBySessionId(string sessionId)
+        {
+            int? tempUserId = null;
+
+            foreach (Session s in sessions)
+            {
+                if (s.GetSessionId() == sessionId && s.IsValid())
+                {
+                    tempUserId = s.GetUserId();
+                    break;
+                }
+            }
+
+            if (tempUserId == null)
+            {
+                return null;
+            }
+
+            foreach (User u in users)
+            {
+                if (u.GetUserId() == tempUserId && u is Driver driver)
+                {
+                    return driver;
+                }
+            }
+            return null;
+        }
     }
 }

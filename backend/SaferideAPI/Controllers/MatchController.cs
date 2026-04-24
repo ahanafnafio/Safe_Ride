@@ -95,6 +95,7 @@ namespace Saferide.Controllers
 
     public class RideRequest
     {
+        public string SessionId { get; set; } = "";
         public string PickupAddress { get; set; } = "";
         public double PickupLat { get; set; }
         public double PickupLon { get; set; }
