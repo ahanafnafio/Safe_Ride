@@ -10,84 +10,95 @@
   <div class="dashboard-page">
 
     <header class="dashboard-header-centered">
-        <div></div>
-        <h1 class="logo-centered">Saferide</h1>
-      
-        <div>
-          <button id="logoutBtn" class="secondary-btn">Logout</button>
-        </div>
-      </header>
-
+      <div></div>
+      <h1 class="logo-centered">Saferide</h1>
+      <div></div>
+    </header>
+  
     <div class="dashboard-container dashboard-app-layout">
       <div class="dashboard-hero">
         <div>
           <p class="hero-label">Rider Dashboard</p>
           <h2>Welcome back, <span id="welcomeUserName">User</span></h2>
           <p class="hero-text">
-            Book a trusted driver quickly and manage your trip details in one place.
+            Select your route, review trip details, and request a driver.
           </p>
         </div>
       </div>
-
-      <div class="dashboard-grid">
-        <div class="left-column">
+  
+      <div class="map-dashboard-layout">
+        <section class="map-section card">
+          <div class="section-top-row">
+            <h3>Map View</h3>
+            <span class="status-pill neutral-pill">Live Preview</span>
+          </div>
+  
+          <div class="map-placeholder" id="map">
+            <div class="map-overlay-text">
+              <p>Map will display here</p>
+              <span>OpenMap JavaScript API integration area</span>
+            </div>
+          </div>
+        </section>
+  
+        <aside class="side-panel">
           <section class="card">
             <div class="section-top-row">
               <div>
                 <h3>Plan Your Ride</h3>
-                <p class="card-subtext">Enter your trip details to request a driver.</p>
+                <p class="card-subtext">Enter trip details to request a driver.</p>
               </div>
               <span class="status-pill neutral-pill" id="tripFormStatus">Ready</span>
             </div>
-
+  
             <div class="input-block">
               <label for="pickup">Pickup Location</label>
               <input id="pickup" type="text" placeholder="Enter pickup location" />
             </div>
-
+  
             <div class="input-block">
               <label for="destination">Destination</label>
               <input id="destination" type="text" placeholder="Enter destination" />
             </div>
-
+  
             <div class="input-block">
               <label for="vehicle">Vehicle</label>
               <input id="vehicle" type="text" placeholder="Enter vehicle" />
             </div>
-
+  
             <div class="trip-meta-grid">
               <div class="input-block">
                 <label for="pickupTime">Pickup Time</label>
                 <input id="pickupTime" type="text" placeholder="ASAP" />
               </div>
-
+  
               <div class="input-block">
                 <label for="contactNumber">Contact Number</label>
                 <input id="contactNumber" type="text" placeholder="Enter contact number" />
               </div>
             </div>
-
+  
             <div class="trip-actions">
               <button id="locationBtn" class="secondary-btn full-btn" type="button">Use Current Location</button>
               <button id="requestBtn" class="main-btn" type="button">Request Driver</button>
             </div>
           </section>
-
+  
           <section class="card">
             <div class="section-top-row">
               <h3>Trip Preview</h3>
               <span class="status-pill neutral-pill" id="previewStatus">Waiting</span>
             </div>
-
+  
             <div class="trip-preview-row">
               <div>
                 <p class="preview-label">Pickup</p>
                 <p class="preview-value" id="previewPickup">Not set</p>
               </div>
             </div>
-
+  
             <div class="trip-preview-divider"></div>
-
+  
             <div class="trip-preview-row">
               <div>
                 <p class="preview-label">Destination</p>
@@ -95,28 +106,18 @@
               </div>
             </div>
           </section>
-        </div>
-
-        <div class="right-column">
-          <section class="card">
-            <h3>Account Info</h3>
-            <p><strong>User:</strong> <span id="accountUser">User</span></p>
-            <p><strong>Role:</strong> Rider</p>
-            <p><strong>Vehicle:</strong> <span id="savedVehicle">Not set</span></p>
-            <p><strong>Payment:</strong> Visa ending in 2048</p>
-          </section>
-
+  
           <section class="card">
             <div class="section-top-row">
               <h3>Ride Status</h3>
               <span class="status-pill" id="statusBadge">Inactive</span>
             </div>
-
+  
             <p><strong>Status:</strong> <span id="status">No active ride</span></p>
             <p><strong>Driver:</strong> <span id="driver">Not assigned</span></p>
             <p><strong>ETA:</strong> <span id="eta">--</span></p>
           </section>
-
+  
           <section class="card">
             <div class="section-top-row">
               <h3>Recent Activity</h3>
@@ -124,11 +125,19 @@
             </div>
             <p id="recentActivityText">No recent ride requests yet.</p>
           </section>
-        </div>
+  
+          <section class="card">
+            <h3>Account Info</h3>
+            <p><strong>User:</strong> <span id="accountUser">User</span></p>
+            <p><strong>Role:</strong> Rider</p>
+            <p><strong>Vehicle:</strong> <span id="savedVehicle">Not set</span></p>
+            <p><strong>Payment:</strong> Visa ending in 2048</p>
+          </section>
+        </aside>
       </div>
     </div>
-  </div>
-
+  </div> 
   <script src="rider-dashboard.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0CGOWvdAUPDCcI8mlp39pLX7TKFFOpRU&callback=initMap"></script>
 </body>
 </html>
