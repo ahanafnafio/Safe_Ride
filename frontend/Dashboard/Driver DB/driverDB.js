@@ -3,9 +3,88 @@ const accountStatus = document.getElementById("accountStatus");
 
 const availableButton = document.getElementById("availableButton");
 const offlineButton = document.getElementById("offlineButton");
-
 const themeToggle = document.getElementById("themeToggle");
-themeToggle.addEventListener("click", function() {
+
+const assignRideButton = document.getElementById("assignRideButton");
+const rideActionButton = document.getElementById("rideActionButton");
+
+const passengerName = document.getElementById("passengerName");
+const pickupLocation = document.getElementById("pickupLocation");
+const destinationLocation = document.getElementById("destinationLocation");
+const vehicleInfo = document.getElementById("vehicleInfo");
+const rideStatus = document.getElementById("rideStatus");
+const mapStatus = document.getElementById("mapStatus");
+
+let map;
+let directionsService;
+let directionsRenderer;
+let currentRideStep = "none";
+
+let currentRide = null;
+
+function getDemoRide() { // Return a hardcoded demo ride for testing purposes
+    return {
+        passenger: "Alex M.",
+        pickup: "Iconic Village, Denton, TX",
+        destination: "UNT Union, Denton, TX",
+        vehicle: "Blue Honda Civic ADB0023"
+    };
+}
+
+function initMap() { // Initialize the Google Map
+    const mapElement = document.getElementById("map");
+
+    if (!mapElement || !window.google || !window.google.maps) {
+        return;
+    }
+
+    map = new google.maps.Map(mapElement, {
+        center: { lat: 33.2148, lng: -97.1331 },
+        zoom: 13,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false
+    });
+
+    directionsService = new google.maps.DirectionsService();
+
+    directionsRenderer = new google.maps.DirectionsRenderer({
+        map: map,
+        suppressMarkers: false
+    });
+}
+
+window.initMap = initMap;
+
+function showRoute(origin, destination) { // Display the route on the map
+    if (!directionsService || !directionsRenderer) {
+        return;
+    }
+
+    directionsService.route(
+        {
+            origin: origin,
+            destination: destination,
+            travelMode: google.maps.TravelMode.DRIVING
+        },
+        function(result, statusResult) { // Callback function to handle the directions result
+            if (statusResult === "OK") {
+                directionsRenderer.setDirections(result);
+            } else {
+                alert("Route could not be loaded. Check the location names.");
+            }
+        }
+    );
+}
+
+function updateMapStatus(text, className) { // Update the map status text
+    mapStatus.textContent = text;
+    mapStatus.classList.remove("offline");
+    mapStatus.classList.remove("online");
+    mapStatus.classList.add(className);
+}
+
+themeToggle.addEventListener("click", function() { // Toggle dark mode class on body
     document.body.classList.toggle("darkMode");
 
     if (document.body.classList.contains("darkMode")) {
@@ -15,50 +94,94 @@ themeToggle.addEventListener("click", function() {
     }
 });
 
-availableButton.addEventListener("click", function() {
+availableButton.addEventListener("click", function() { // Set driver status to online and update UI
     driverStatus.textContent = "Online";
     driverStatus.classList.remove("offline");
     driverStatus.classList.add("online");
+
     accountStatus.textContent = "Online";
 });
 
-offlineButton.addEventListener("click", function() {
+offlineButton.addEventListener("click", function() { // Set driver status to offline and update UI
     driverStatus.textContent = "Offline";
     driverStatus.classList.remove("online");
     driverStatus.classList.add("offline");
+
     accountStatus.textContent = "Offline";
 });
 
-let acceptButton1 = document.getElementById("acceptButton1");
-let declineButton1 = document.getElementById("declineButton1");
-let rideStatus1 = document.getElementById("rideStatus1");
-let ride1 = document.getElementById("ride1");
+assignRideButton.addEventListener("click", function() { // Assign a ride to the driver
+    if (driverStatus.textContent !== "Online") {
+        alert("Go available before accepting a ride.");
+        return;
+    }
 
-let acceptButton2 = document.getElementById("acceptButton2");
-let declineButton2 = document.getElementById("declineButton2");
-let rideStatus2 = document.getElementById("rideStatus2");
-let ride2 = document.getElementById("ride2");
+    currentRide = getDemoRide();
 
-acceptButton1.addEventListener("click", function() {
-    rideStatus1.textContent = "Ride Accepted";
-    ride1.classList.remove("rideDeclined");
-    ride1.classList.add("rideAccepted");
+    passengerName.textContent = currentRide.passenger;
+    pickupLocation.textContent = currentRide.pickup;
+    destinationLocation.textContent = currentRide.destination;
+    vehicleInfo.textContent = currentRide.vehicle;
+
+    rideStatus.textContent = "Driving to rider pickup location";
+    updateMapStatus("To Pickup", "online");
+
+    currentRideStep = "toPickup";
+
+    assignRideButton.disabled = true;
+    assignRideButton.classList.add("secondaryBtn");
+
+    rideActionButton.disabled = false;
+    rideActionButton.textContent = "Mark Picked Up";
+    rideActionButton.classList.remove("secondaryBtn");
+
+    showRoute("Denton Square, Denton, TX", currentRide.pickup);
 });
 
-declineButton1.addEventListener("click", function() {
-    rideStatus1.textContent = "Ride Declined";
-    ride1.classList.remove("rideAccepted");
-    ride1.classList.add("rideDeclined");
+rideActionButton.addEventListener("click", function() { // Handle ride progression based on current step
+    if (currentRideStep === "toPickup") { // Mark the rider as picked up and update the UI to show route to destination
+        currentRideStep = "toDestination";
+
+        rideStatus.textContent = "Rider picked up. Driving to destination.";
+        updateMapStatus("To Destination", "online");
+
+        rideActionButton.textContent = "Complete Ride";
+
+        showRoute(currentRide.pickup, currentRide.destination);
+    } 
+    else if (currentRideStep === "toDestination") {
+        currentRideStep = "completed";
+
+        // Show completion FIRST (briefly)
+        rideStatus.textContent = "Ride completed. Rider and vehicle dropped off.";
+        updateMapStatus("Completed", "online");
+
+        rideActionButton.textContent = "Ride Complete";
+        rideActionButton.disabled = true;
+        rideActionButton.classList.add("secondaryBtn");
+
+        assignRideButton.disabled = false;
+        assignRideButton.classList.remove("secondaryBtn");
+
+        // Reset everything AFTER
+        setTimeout(() => {
+            resetMap();
+
+            updateMapStatus("Waiting", "offline");
+
+            passengerName.textContent = "Not assigned";
+            pickupLocation.textContent = "--";
+            destinationLocation.textContent = "--";
+            vehicleInfo.textContent = "--";
+            rideStatus.textContent = "No active ride";
+        }, 1500);
+    }
 });
 
-acceptButton2.addEventListener("click", function() {
-    rideStatus2.textContent = "Ride Accepted";
-    ride2.classList.remove("rideDeclined");
-    ride2.classList.add("rideAccepted");
-});
-
-declineButton2.addEventListener("click", function() {
-    rideStatus2.textContent = "Ride Declined";
-    ride2.classList.remove("rideAccepted");
-    ride2.classList.add("rideDeclined");
-});
+    function resetMap() { // Clear the map and reset to default view
+        if (!map || !directionsRenderer) 
+            return;
+        directionsRenderer.setDirections({ routes: [] });
+        map.setCenter({ lat: 33.2148, lng: -97.1331 });
+        map.setZoom(13);
+    }

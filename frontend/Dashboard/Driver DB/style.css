@@ -312,3 +312,51 @@ a:hover {
   gap: 20px;
   margin-top: 20px;
 }
+
+.sectionTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.mapCard {
+  margin-top: 20px;
+}
+
+.driverMap {
+  width: 100%;
+  min-height: 480px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #dfe7e3, #cfd9d4);
+  border: 1px solid #d0d8d3;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mapOverlayText {
+  text-align: center;
+}
+
+.mapOverlayText p {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.mapOverlayText span {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+body.darkMode .driverMap {
+  background: #111827;
+  border-color: #374151;
+}
+
+body.darkMode .mapOverlayText p,
+body.darkMode .mapOverlayText span {
+  color: #f9fafb;
+}

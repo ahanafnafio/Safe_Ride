@@ -45,35 +45,35 @@
 
                 </div>
 
-                <div class="card" id="rideRequestCard">
-                    <h2>Available Rides</h2>
+                <div class="card mapCard">
+                    <div class="sectionTopRow">
+                        <h2>Current Ride Map</h2>
+                        <span id="mapStatus" class="statusBadge offline">Waiting</span>
+                    </div>
 
-                    <div class="rideCard" id="ride1">
-                        <p><strong>Pickup:</strong> UNT Union</p>
-                        <p><strong>Dropoff:</strong> Iconic Village</p>
-                        <p><strong>Passenger:</strong> Alex M.</p>
-                        <p><strong>Notes:</strong> Blue Honda Civic ADB0023</p>
-                        <p><strong>Status:</strong> <span id="rideStatus1">Waiting for Driver Response</span></p>
-
-                        <div class="buttonGroup">
-                            <button id="acceptButton1" class="loginBtn">Accept</button>
-                            <button id="declineButton1" class="loginBtn secondaryBtn">Decline</button>
+                    <div id="map" class="driverMap">
+                        <div class="mapOverlayText">
+                            <p>Go available to view assigned ride</p>
+                            <span>Google Maps will display the active route here.</span>
                         </div>
                     </div>
 
-                    <div class="rideCard" id="ride2">
-                        <p><strong>Pickup:</strong> Willis Library</p>
-                        <p><strong>Dropoff:</strong> Buccee's</p>
-                        <p><strong>Passenger:</strong> Maya H.</p>
-                        <p><strong>Notes:</strong> White Toyota Camry STR0068</p>
-                        <p><strong>Status:</strong> <span id="rideStatus2">Waiting for Driver Response</span></p>
+                </div>
 
-                        <div class="buttonGroup">
-                            <button id="acceptButton2" class="loginBtn">Accept</button>
-                            <button id="declineButton2" class="loginBtn secondaryBtn">Decline</button>
-                        </div>
+                <div class="card" id="activeRideCard">
+                    <h2>Active Ride</h2>
+
+                    <p><strong>Passenger:</strong> <span id="passengerName">Not assigned</span></p>
+                    <p><strong>Driver Start:</strong> <span id="driverStartLocation">Denton Square, Denton, TX</span></p>
+                    <p><strong>Pickup:</strong> <span id="pickupLocation">--</span></p>
+                    <p><strong>Destination:</strong> <span id="destinationLocation">--</span></p>
+                    <p><strong>Vehicle:</strong> <span id="vehicleInfo">--</span></p>
+                    <p><strong>Ride Status:</strong> <span id="rideStatus">No active ride</span></p>
+
+                    <div class="buttonGroup">
+                        <button id="assignRideButton" class="loginBtn">Simulate Assigned Ride</button>
+                        <button id="rideActionButton" class="loginBtn secondaryBtn" disabled>Waiting</button>
                     </div>
-
                 </div>
 
                 <div class="card">
@@ -93,5 +93,6 @@
 
             <script src="driverDB.js"></script>
             <script src="../../logout.js"></script>
+            <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0CGOWvdAUPDCcI8mlp39pLX7TKFFOpRU&callback=initMap"></script>
         </body>
 </html>
