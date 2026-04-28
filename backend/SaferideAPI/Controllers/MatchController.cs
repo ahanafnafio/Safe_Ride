@@ -9,10 +9,11 @@ namespace Saferide.Controllers
     public class MatchController : ControllerBase
     {
         private readonly MatchMaking _matchMaking;
-
-        public MatchController(MatchMaking matchMaking)
+        private readonly Authentication _authentication;
+        public MatchController(MatchMaking matchMaking, Authentication authentication)
         {
             _matchMaking = matchMaking;
+            _authentication = authentication;
         }
 
         // ================= DRIVER =================
@@ -49,21 +50,14 @@ namespace Saferide.Controllers
         [HttpPost("ride/request")]
         public async Task<IActionResult> RequestRide([FromBody] RideRequest request)
         {
-            Location pickup = new Location(request.PickupAddress, request.PickupLat, request.PickupLon);
-            Location dropoff = new Location(request.DropoffAddress, request.DropoffLat, request.DropoffLon);
-
-            // Should call Rider.RequestRide( all parameters) to verify vehicleId and will return a Ride object
-            // Ride ride = Rider.RequestRide( ... )
-            // var result = await _matchMaking.AddRide(ride);
-
-            Ride ride = new Ride(
-                pickup,
-                dropoff,
-                request.Notes,
-                request.VehicleId
-            );
-
-            var result = await _matchMaking.AddRide(ride);
+            var tempRider = _authentication.GetRiderBySessionId(request.SessionId);
+            if (tempRider == null)
+            {
+                return Unauthorized("Invalid or expired session.");
+            }
+            Ride newRide = tempRider.RequestRide(request.VehicleId, request.PickupAddress, request.PickupLat, request.PickupLon,
+                                                   request.DropoffAddress, request.DropoffLat, request.DropoffLon, request.Notes);
+            var result = await _matchMaking.AddRide(newRide);
 
             if (result == null)
             {
@@ -72,7 +66,38 @@ namespace Saferide.Controllers
 
             return Ok(result);
         }
+
+        // ================= VEHICLE =================
+
+        // POST: api/match/vehicle/add
+        [HttpPost("vehicle/add")]
+        public IActionResult AddVehicle([FromBody] AddVehicleRequest request)
+        {
+            var rider = _authentication.GetRiderBySessionId(request.SessionId);
+
+            if (rider == null)
+            {
+                return Unauthorized("Invalid or expired session.");
+            }
+
+            rider.AddVehicle(
+                request.Make,
+                request.Model,
+                request.Color,
+                request.Plate,
+                request.Notes
+            );
+
+            return Ok(rider.GetVehicles().Select(v => new {
+                id = v.GetVehicleId(),
+                make = request.Make,
+                model = request.Model
+            }));
+        }
     }
+
+
+
 
     // ================= DTOs =================
 
@@ -106,5 +131,16 @@ namespace Saferide.Controllers
 
         public string Notes { get; set; } = "";
         public int VehicleId { get; set; }
+    }
+
+    public class AddVehicleRequest
+    {
+        public string SessionId { get; set; } = "";
+
+        public string Make { get; set; } = "";
+        public string Model { get; set; } = "";
+        public string Color { get; set; } = "";
+        public string Plate { get; set; } = "";
+        public string Notes { get; set; } = "";
     }
 }
