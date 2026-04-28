@@ -21,6 +21,7 @@ namespace Saferide.Services
         public void AddDriver(Driver newDriver)
         {
             drivers.Add(newDriver);
+            Console.WriteLine($"{newDriver.GetFirstName()} has been added to the list.");
         }
         public async Task<RideAssignmentResult?> AddRide(Ride newRide)
         {
