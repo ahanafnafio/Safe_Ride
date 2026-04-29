@@ -71,7 +71,7 @@ body.darkMode a{
   margin: 0 0 8px;
   font-size: 34px;
   font-weight: 800;
-  color: #16a34a;
+  color: #166534;
   letter-spacing: 0.3px;
 }
 
@@ -113,7 +113,7 @@ input {
 
 input:focus {
   outline: none;
-  border-color: #16a34a;
+  border-color: #166534;
   box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
 }
 
@@ -128,7 +128,7 @@ input:focus {
   transform: translateY(-50%);
   border: none;
   background: transparent;
-  color: #16a34a;
+  color: #166534;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -150,7 +150,7 @@ input:focus {
   padding: 14px;
   border: none;
   border-radius: 10px;
-  background: #16a34a;
+  background: #166534;
   color: white;
   font-size: 16px;
   font-weight: 700;
@@ -161,6 +161,7 @@ input:focus {
 .loginBtn:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 18px rgba(22, 163, 74, 0.22);
+  background: #14532d;
 }
 
 .loginBtn:active {
@@ -174,7 +175,7 @@ input:focus {
 }
 
 a {
-  color: #16a34a;
+  color: #166534;
   text-decoration: none;
   font-weight: 600;
 }
@@ -283,6 +284,16 @@ a:hover {
   color: #166534;
 }
 
+body.darkMode .statusBadge.online {
+  background: rgba(22, 101, 52, 0.25);
+  color: #86efac;
+}
+
+body.darkMode .statusBadge.offline {
+  background: rgba(185, 28, 28, 0.25);
+  color: #fca5a5;
+}
+
 .rideCard {
   background: #f8faf8;
   border: 1px solid #e3e8e3;
@@ -359,4 +370,19 @@ body.darkMode .driverMap {
 body.darkMode .mapOverlayText p,
 body.darkMode .mapOverlayText span {
   color: #f9fafb;
+}
+.skipLink {
+  position: absolute;
+  top: -40px;
+  left: 10px;
+  background: #16a34a;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.skipLink:focus {
+  top: 10px;
 }
