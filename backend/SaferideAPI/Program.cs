@@ -53,6 +53,11 @@ MatchMaking matchMaking = app.Services.GetRequiredService<MatchMaking>();
 Driver? driver1 = authentication.Register("John", "Renaldo", "JohnRenaldo@yahoo.com", "Pass123", "Driver") as Driver;
 Driver? driver2 = authentication.Register("Ron", "Donald", "RonDonald@yahoo.com", "Pass123", "Driver") as Driver;
 Driver? driver3 = authentication.Register("Don", "Donald", "DonDonald@yahoo.com", "Pass123", "Driver") as Driver;
+Rider? keaton = authentication.Register("Keaton", "Morales", "KeatonMorales@yahoo.com", "Pass123", "Rider") as Rider;
+Rider? kendra = authentication.Register("Kendra", "Murphy", "KendraMurphy@yahoo.com", "Pass123", "Rider") as Rider;
+Rider? ben = authentication.Register("Ben", "Nelson", "BenNelson@yahoo.com", "Pass123", "Rider") as Rider;
+Rider? caden = authentication.Register("Caden", "Walters", "CadenWalters@yahoo.com", "Pass123", "Rider") as Rider;
+Rider? ahanaf = authentication.Register("Ahanaf", "Akif", "AhanafAkif@yahoo.com", "Pass123", "Rider") as Rider;
 
 Session? sessionIdD1 = authentication.Login("JohnRenaldo@yahoo.com", "Pass123");
 Session? sessionIdD2 = authentication.Login("RonDonald@yahoo.com", "Pass123");
