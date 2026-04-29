@@ -2,6 +2,7 @@ namespace Saferide.Models
 {
     public class RideAssignmentResult
     {
+        public int RideId { get; set; }
         public string RideStatus { get; set; } = "";
         public string DriverFirstName { get; set; } = "";
         public string DriverLastName { get; set; } = "";

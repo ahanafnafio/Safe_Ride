@@ -39,28 +39,71 @@ namespace Saferide.Services
 
             // Assign the driver
             Driver driver = bestResult.Driver;
+
+            Location? driverLocation = driver.GetCurrentLocation();
+            if (driverLocation == null)
+            {
+                return null;
+            }
+            // Getting driver -> pickup route
+            RouteResult? driverToPickupRoute = await routingService.ComputeRouteAsync(driverLocation, newRide.GetPickup());
+
+            if (driverToPickupRoute == null)
+            {
+                return null;
+            }
+             // set staus and turn off availability
             newRide.SetStatus("Assigned");
             driver.SetAvailability(false);
 
-            // Compute the final trip route (pickup -> dropoff)
-            RouteResult? tripRoute = await routingService.ComputeRouteAsync(newRide.GetPickup(), newRide.GetDropoff());
+            // Return assignment + route info
+            return new RideAssignmentResult
+            {
+                RideId = newRide.GetRideId(),
+                RideStatus = newRide.GetStatus(),
+                DriverFirstName = driver.GetFirstName(),
+                DriverLastName = driver.GetLastName(),
+                DriverEtaSeconds = bestResult.DurationSeconds,
+                RouteDuration = driverToPickupRoute.Duration ?? "",
+                RouteDistanceMeters = driverToPickupRoute.DistanceMeters,
+                EncodedPolyline = driverToPickupRoute.EncodedPolyline ?? ""
+            };
+        }
+
+        public async Task<RideAssignmentResult?> CalculateFinalRoute(int rideId)
+        {
+            Ride? currentRide = null;
+            foreach (Ride r in rides)
+            {
+                if (rideId == r.GetRideId())
+                {
+                    currentRide = r;
+                    break;
+                }
+            }
+            if (currentRide == null)
+            {
+                return null;
+            }
+
+            RouteResult? tripRoute = await routingService.ComputeRouteAsync(currentRide.GetPickup(), currentRide.GetDropoff());
 
             if (tripRoute == null)
             {
                 return null;
             }
 
-            // Return assignment + route info
+            currentRide.SetStatus("InProgress");
+            
             return new RideAssignmentResult
             {
-                RideStatus = newRide.GetStatus(),
-                DriverFirstName = driver.GetFirstName(),
-                DriverLastName = driver.GetLastName(),
-                DriverEtaSeconds = bestResult.DurationSeconds,
+                RideId = currentRide.GetRideId(),
+                RideStatus = currentRide.GetStatus(),
                 RouteDuration = tripRoute.Duration ?? "",
                 RouteDistanceMeters = tripRoute.DistanceMeters,
                 EncodedPolyline = tripRoute.EncodedPolyline ?? ""
             };
+
         }
     }
 }
