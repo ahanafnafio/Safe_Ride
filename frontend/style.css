@@ -2,6 +2,24 @@
   box-sizing: border-box;
 }
 
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #d8d8d8;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  z-index: 1000;
+}
+
+.theme-toggle:hover {
+  background: #f5f5f5;
+}
+
 body {
   margin: 0;
   font-family: "Helvetica Neue", Arial, sans-serif;
@@ -603,4 +621,297 @@ label {
 #requestBtn:hover,
 .login-btn:hover {
   background-color: #14532d;
+}
+
+.dark-mode {
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: #f9fafb;
+}
+
+.dark-mode .container,
+.dark-mode .card,
+.dark-mode .dashboard-hero {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+.dark-mode input {
+  background: #374151;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+
+.dark-mode .main-btn {
+  background: #22c55e;
+}
+
+.dark-mode .main-btn:hover {
+  background: #16a34a;
+}
+
+/* FIX: remove white background from forgot password in dark mode */
+.dark-mode .text-button {
+  background: transparent !important;
+  border: none !important;
+  color: #86efac !important;
+}
+
+.dark-mode .text-button:hover {
+  background: rgba(134, 239, 172, 0.1) !important;
+}
+
+/* ensure no default button styling leaks */
+.text-button {
+  background: none;
+  border: none;
+}
+
+/* Accessibility: screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Dark mode improvements for dashboard */
+.dark-mode .dashboard-page {
+  background: linear-gradient(135deg, #111827, #1f2937);
+}
+
+.dark-mode .map-placeholder {
+  background: linear-gradient(135deg, #1f2937, #111827);
+  border: 1px solid #374151;
+}
+
+.dark-mode .map-overlay-text p {
+  color: #f9fafb;
+}
+
+.dark-mode .map-overlay-text span {
+  color: #d1d5db;
+}
+
+/* ===== FINAL DARK MODE DASHBOARD READABILITY FIXES ===== */
+.dark-mode .dashboard-page {
+  background: linear-gradient(135deg, #0f172a, #111827) !important;
+  color: #f9fafb !important;
+}
+
+.dark-mode .dashboard-hero,
+.dark-mode .card {
+  background: #1e293b !important;
+  color: #f9fafb !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+.dark-mode .dashboard-hero h2,
+.dark-mode .card h3,
+.dark-mode .card p,
+.dark-mode .card strong,
+.dark-mode .card span,
+.dark-mode .preview-value,
+.dark-mode .hero-text,
+.dark-mode .card-subtext,
+.dark-mode .input-block label,
+.dark-mode .section-top-row h3 {
+  color: #f9fafb !important;
+}
+
+.dark-mode .hero-label,
+.dark-mode .preview-label,
+.dark-mode .logo-centered {
+  color: #86efac !important;
+}
+
+.dark-mode input {
+  background: #334155 !important;
+  color: #f9fafb !important;
+  border: 1px solid #64748b !important;
+}
+
+.dark-mode input::placeholder {
+  color: #cbd5e1 !important;
+}
+
+.dark-mode input:focus {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.22) !important;
+}
+
+.dark-mode .status-pill,
+.dark-mode .neutral-pill {
+  background: #f8fafc !important;
+  color: #111827 !important;
+}
+
+.dark-mode .secondary-btn {
+  background: #f8fafc !important;
+  color: #111827 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.dark-mode .secondary-btn:hover {
+  background: #e2e8f0 !important;
+}
+
+.dark-mode .main-btn,
+.dark-mode #requestBtn {
+  background: #166534 !important;
+  color: #ffffff !important;
+}
+
+.dark-mode .main-btn:hover,
+.dark-mode #requestBtn:hover {
+  background: #14532d !important;
+}
+
+.dark-mode .trip-preview-divider {
+  background: #64748b !important;
+}
+
+.dark-mode .map-section.card {
+  background: #1e293b !important;
+}
+
+.dark-mode .map-placeholder {
+  border: 1px solid #475569 !important;
+}
+
+.dark-mode .theme-toggle {
+  background: #1e293b !important;
+  color: #f9fafb !important;
+  border: 1px solid #64748b !important;
+}
+.dark-mode .status-pill,
+.dark-mode .neutral-pill,
+.dark-mode .badge,
+.dark-mode .status-label {
+  background: #e5e7eb !important;   /* light pill */
+  color: #111827 !important;        /* dark readable text */
+  border: 1px solid #cbd5e1 !important;
+}
+
+/* Specific text labels (in case they are plain spans/divs) */
+.dark-mode span,
+.dark-mode div {
+  /* only fix light gray text that becomes unreadable */
+}
+
+.dark-mode .section-top-row span,
+.dark-mode .section-top-row div {
+  color: #111827 !important;
+}
+
+/* Buttons like "Use Current Location" */
+.dark-mode .secondary-btn {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.dark-mode .secondary-btn:hover {
+  background: #e5e7eb !important;
+}
+
+/* Ensure green buttons stay readable */
+.dark-mode .main-btn,
+.dark-mode #requestBtn {
+  background: #166534 !important;
+  color: #ffffff !important;
+}
+
+/* Accessibility: skip link for keyboard users */
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 16px;
+  background: #166534;
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  z-index: 2000;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 16px;
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+#mainContent:focus {
+  outline: none;
+}
+
+.dark-mode .skip-link {
+  background: #86efac;
+  color: #111827;
+}
+
+/* Dark mode: keep status pills readable without darkening nearby headings */
+.dark-mode .section-top-row span.status-pill,
+.dark-mode .section-top-row span.neutral-pill,
+.dark-mode #tripFormStatus,
+.dark-mode #previewStatus,
+.dark-mode #statusBadge,
+.dark-mode #activityBadge {
+  background: #e5e7eb !important;
+  color: #111827 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+.dark-mode .section-top-row h3,
+.dark-mode .section-top-row .card-subtext {
+  color: #f9fafb !important;
+}
+.add-vehicle-btn {
+  margin-top: 10px;
+}
+
+.vehicle-feedback {
+  min-height: 18px;
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #166534;
+  font-weight: 600;
+}
+
+.input-block select {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  background: #ffffff;
+  color: #111827;
+}
+
+.input-block select:focus {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+.dark-mode .vehicle-feedback {
+  color: #86efac;
+}
+
+.dark-mode .input-block select {
+  background: #334155 !important;
+  color: #f9fafb !important;
+  border: 1px solid #64748b !important;
+}
+
+.dark-mode .input-block select option {
+  background: #334155;
+  color: #f9fafb;
 }

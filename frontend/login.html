@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">🌙</button>
   <div class="container">
     <h1 class="logo">Saferide</h1>
     <p class="subtitle">Welcome back. Log in to continue.</p>
@@ -25,10 +26,16 @@
       </div>
       <p class="error-message" id="passwordError"></p>
 
+      <div class="form-options">
+        <button type="button" class="text-button" id="forgotPasswordBtn">Forgot password?</button>
+      </div>
+
+      <p class="status-message" id="loginStatus" role="status" aria-live="polite"></p>
+
       <button type="submit" class="login-btn">Log In</button>
     </form>
 
-    <p class="footer-text">New here? <a href="register.html">Create an account</a></p>
+    <p class="footer-text">New here? <a href="register.html" id="registerLink">Create an account</a></p>
   </div>
 
   <script src="login.js"></script>

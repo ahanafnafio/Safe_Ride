@@ -1,6 +1,9 @@
 const pickup = document.getElementById("pickup");
 const destination = document.getElementById("destination");
 const vehicle = document.getElementById("vehicle");
+const addVehicleBtn = document.getElementById("addVehicleBtn");
+const savedVehicleSelect = document.getElementById("savedVehicleSelect");
+const vehicleFeedback = document.getElementById("vehicleFeedback");
 const pickupTime = document.getElementById("pickupTime");
 const contactNumber = document.getElementById("contactNumber");
 
@@ -24,10 +27,71 @@ const mapSubtext = document.querySelector(".map-overlay-text span");
 
 const locationBtn = document.getElementById("locationBtn");
 const requestBtn = document.getElementById("requestBtn");
+const themeToggle = document.getElementById("themeToggle");
+const dashboardStatusMessage = document.getElementById("dashboardStatusMessage");
 
 let map;
 let directionsService;
 let directionsRenderer;
+
+const API_BASE_URL = "http://localhost:5044/api";
+
+function getSessionId() {
+  let sessionId = localStorage.getItem("sessionId");
+
+  if (!sessionId) {
+    sessionId = `demo-session-${Date.now()}`;
+    localStorage.setItem("sessionId", sessionId);
+  }
+
+  return sessionId;
+}
+
+async function addVehicleToApi(vehicleItem) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/Match/vehicle/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        sessionId: getSessionId(),
+        vehicleId: vehicleItem.vehicleId,
+        name: vehicleItem.name
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Vehicle API request failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.warn("Vehicle API unavailable. Vehicle saved locally for demo.", error);
+    return null;
+  }
+}
+
+async function requestRideFromApi(rideRequest) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/Match/ride/request`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(rideRequest)
+    });
+
+    if (!response.ok) {
+      throw new Error("Ride request API failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.warn("Ride request API unavailable. Ride saved locally for demo.", error);
+    return null;
+  }
+}
 
 function loadUserName() {
   const storedName = localStorage.getItem("saferideUserName");
@@ -36,6 +100,60 @@ function loadUserName() {
     welcomeUserName.textContent = storedName;
   }
 }
+
+function getSavedVehicles() {
+  return JSON.parse(localStorage.getItem("saferideVehicles")) || [];
+}
+
+function saveVehicles(vehicles) {
+  localStorage.setItem("saferideVehicles", JSON.stringify(vehicles));
+}
+
+function renderSavedVehicles() {
+  const vehicles = getSavedVehicles();
+
+  savedVehicleSelect.innerHTML = '<option value="">No saved vehicle selected</option>';
+
+  vehicles.forEach((vehicleItem) => {
+    const option = document.createElement("option");
+    option.value = vehicleItem.vehicleId;
+    option.textContent = vehicleItem.name;
+    savedVehicleSelect.appendChild(option);
+  });
+}
+
+function getSelectedVehicleObject() {
+  const vehicles = getSavedVehicles();
+  return vehicles.find((vehicleItem) => vehicleItem.vehicleId === savedVehicleSelect.value);
+}
+
+function applySavedTheme() {
+  const savedTheme = localStorage.getItem("saferideTheme");
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    themeToggle.textContent = "☀️";
+  } else {
+    document.body.classList.remove("dark-mode");
+    themeToggle.textContent = "🌙";
+  }
+}
+
+function announceDashboardUpdate(message) {
+  if (dashboardStatusMessage) {
+    dashboardStatusMessage.textContent = message;
+  }
+}
+
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+
+  const isDarkMode = document.body.classList.contains("dark-mode");
+  localStorage.setItem("saferideTheme", isDarkMode ? "dark" : "light");
+  themeToggle.textContent = isDarkMode ? "☀️" : "🌙";
+
+  announceDashboardUpdate(isDarkMode ? "Dark mode enabled." : "Light mode enabled.");
+});
 
 function initMap() {
   const mapElement = document.getElementById("map");
@@ -101,6 +219,48 @@ function resetRideState() {
   }
 }
 
+addVehicleBtn.addEventListener("click", () => {
+  const vehicleName = vehicle.value.trim();
+
+  if (!vehicleName) {
+    vehicleFeedback.textContent = "Enter a vehicle before adding it.";
+    announceDashboardUpdate("Enter a vehicle before adding it.");
+    return;
+  }
+
+  const vehicles = getSavedVehicles();
+  const newVehicle = {
+    vehicleId: `vehicle-${Date.now()}`,
+    sessionId: getSessionId(),
+    name: vehicleName,
+    createdAt: new Date().toISOString()
+  };
+
+  vehicles.push(newVehicle);
+  saveVehicles(vehicles);
+  renderSavedVehicles();
+
+  savedVehicleSelect.value = newVehicle.vehicleId;
+  savedVehicle.textContent = newVehicle.name;
+  vehicleFeedback.textContent = `${newVehicle.name} added to saved vehicles.`;
+  announceDashboardUpdate(`${newVehicle.name} added to saved vehicles.`);
+  addVehicleToApi(newVehicle);
+});
+
+savedVehicleSelect.addEventListener("change", () => {
+  const selectedVehicle = getSelectedVehicleObject();
+
+  if (selectedVehicle) {
+    vehicle.value = selectedVehicle.name;
+    savedVehicle.textContent = selectedVehicle.name;
+    vehicleFeedback.textContent = `${selectedVehicle.name} selected for this ride.`;
+    announceDashboardUpdate(`${selectedVehicle.name} selected for this ride.`);
+  } else {
+    savedVehicle.textContent = "Not set";
+    vehicleFeedback.textContent = "No saved vehicle selected.";
+  }
+});
+
 locationBtn.addEventListener("click", () => {
   if (!navigator.geolocation) {
     alert("Geolocation is not supported by your browser.");
@@ -109,6 +269,7 @@ locationBtn.addEventListener("click", () => {
 
   locationBtn.disabled = true;
   locationBtn.textContent = "Getting Location...";
+  announceDashboardUpdate("Getting your current location.");
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
@@ -141,11 +302,13 @@ locationBtn.addEventListener("click", () => {
 
       locationBtn.disabled = false;
       locationBtn.textContent = "Use Current Location";
+      announceDashboardUpdate("Pickup location updated to your current location.");
     },
     () => {
       alert("Location access was denied or unavailable.");
       locationBtn.disabled = false;
       locationBtn.textContent = "Use Current Location";
+      announceDashboardUpdate("Location access was denied or unavailable.");
     }
   );
 });
@@ -157,6 +320,8 @@ requestBtn.addEventListener("click", () => {
   const pickupValue = pickup.value.trim();
   const destinationValue = destination.value.trim();
   const vehicleValue = vehicle.value.trim();
+  const selectedVehicle = getSelectedVehicleObject();
+  const selectedVehicleId = selectedVehicle ? selectedVehicle.vehicleId : null;
   const pickupTimeValue = pickupTime.value.trim();
   const contactValue = contactNumber.value.trim();
 
@@ -168,10 +333,27 @@ requestBtn.addEventListener("click", () => {
     !contactValue
   ) {
     alert("Please complete all trip fields before requesting a driver.");
+    announceDashboardUpdate("Please complete all trip fields before requesting a driver.");
     return;
   }
 
-  savedVehicle.textContent = vehicleValue;
+  savedVehicle.textContent = selectedVehicle ? selectedVehicle.name : vehicleValue;
+
+  const rideRequest = {
+    sessionId: getSessionId(),
+    pickup: pickupValue,
+    destination: destinationValue,
+    vehicle: selectedVehicle ? selectedVehicle.name : vehicleValue,
+    vehicleId: selectedVehicleId,
+    pickupTime: pickupTimeValue,
+    contact: contactValue,
+    status: "Requested",
+    driver: "Not assigned",
+    eta: "5-8 min"
+  };
+
+  localStorage.setItem("saferideRideRequest", JSON.stringify(rideRequest));
+  requestRideFromApi(rideRequest);
 
   if (mapText) {
     mapText.textContent = `Route: ${pickupValue} → ${destinationValue}`;
@@ -213,6 +395,7 @@ requestBtn.addEventListener("click", () => {
 
   requestBtn.disabled = true;
   requestBtn.textContent = "Finding Driver...";
+  announceDashboardUpdate("Ride request submitted. Finding a driver.");
 
   status.textContent = "Driver requested";
   driver.textContent = "Searching...";
@@ -229,6 +412,7 @@ requestBtn.addEventListener("click", () => {
     statusBadge.textContent = "Matched";
     activityBadge.textContent = "Driver assigned";
     recentActivityText.textContent = `James Carter is on the way to ${pickupValue}.`;
+    announceDashboardUpdate("Driver assigned. James Carter is on the way.");
 
     if (mapSubtext) {
       mapSubtext.textContent = "Driver matched. Route active on map preview.";
@@ -244,9 +428,12 @@ requestBtn.addEventListener("click", () => {
 
     requestBtn.textContent = "Driver Requested";
     requestBtn.disabled = false;
+    announceDashboardUpdate("Driver is en route. Estimated arrival is 2 minutes.");
   }, 3500);
 });
 
+renderSavedVehicles();
+applySavedTheme();
 loadUserName();
 updatePreview();
 resetRideState();

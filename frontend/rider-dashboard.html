@@ -7,7 +7,11 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="dashboard-page">
+  <a href="#mainContent" class="skip-link">Skip to main content</a>
+  <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle between light and dark mode">🌙</button>
+  <div id="mainContent" class="dashboard-page" tabindex="-1">
+
+    <p id="dashboardStatusMessage" class="sr-only" role="status" aria-live="polite"></p>
 
     <header class="dashboard-header-centered">
       <div></div>
@@ -33,7 +37,7 @@
             <span class="status-pill neutral-pill">Live Preview</span>
           </div>
   
-          <div class="map-placeholder" id="map">
+          <div class="map-placeholder" id="map" role="region" aria-label="Map showing rider pickup, destination, and route preview">
             <div class="map-overlay-text">
               <p>Map will display here</p>
               <span>OpenMap JavaScript API integration area</span>
@@ -61,9 +65,18 @@
               <input id="destination" type="text" placeholder="Enter destination" />
             </div>
   
-            <div class="input-block">
+            <div class="input-block vehicle-input-block">
               <label for="vehicle">Vehicle</label>
-              <input id="vehicle" type="text" placeholder="Enter vehicle" />
+              <input id="vehicle" type="text" placeholder="Enter vehicle name, make, or plate" />
+              <button id="addVehicleBtn" class="secondary-btn full-btn add-vehicle-btn" type="button" aria-label="Add this vehicle to your saved vehicles">Add Vehicle</button>
+              <p id="vehicleFeedback" class="vehicle-feedback" role="status" aria-live="polite"></p>
+            </div>
+
+            <div class="input-block">
+              <label for="savedVehicleSelect">Saved Vehicles</label>
+              <select id="savedVehicleSelect" aria-label="Select a saved vehicle for this ride">
+                <option value="">No saved vehicle selected</option>
+              </select>
             </div>
   
             <div class="trip-meta-grid">
@@ -79,8 +92,8 @@
             </div>
   
             <div class="trip-actions">
-              <button id="locationBtn" class="secondary-btn full-btn" type="button">Use Current Location</button>
-              <button id="requestBtn" class="main-btn" type="button">Request Driver</button>
+              <button id="locationBtn" class="secondary-btn full-btn" type="button" aria-label="Use your current location as the pickup point">Use Current Location</button>
+              <button id="requestBtn" class="main-btn" type="button" aria-label="Request a driver for the selected trip">Request Driver</button>
             </div>
           </section>
   
@@ -130,7 +143,7 @@
             <h3>Account Info</h3>
             <p><strong>User:</strong> <span id="accountUser">User</span></p>
             <p><strong>Role:</strong> Rider</p>
-            <p><strong>Vehicle:</strong> <span id="savedVehicle">Not set</span></p>
+            <p><strong>Selected Vehicle:</strong> <span id="savedVehicle">Not set</span></p>
             <p><strong>Payment:</strong> Visa ending in 2048</p>
           </section>
         </aside>
