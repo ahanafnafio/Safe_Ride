@@ -27,6 +27,8 @@ const mapSubtext = document.querySelector(".map-overlay-text span");
 
 const locationBtn = document.getElementById("locationBtn");
 const requestBtn = document.getElementById("requestBtn");
+const arrivedBtn = document.getElementById("arrivedBtn");
+const completeBtn = document.getElementById("completeBtn");
 const themeToggle = document.getElementById("themeToggle");
 const dashboardStatusMessage = document.getElementById("dashboardStatusMessage");
 
@@ -430,6 +432,38 @@ requestBtn.addEventListener("click", () => {
     requestBtn.disabled = false;
     announceDashboardUpdate("Driver is en route. Estimated arrival is 2 minutes.");
   }, 3500);
+});
+
+arrivedBtn.addEventListener("click", () => {
+  status.textContent = "Driver arrived";
+  eta.textContent = "Arrived";
+  statusBadge.textContent = "Arrived";
+  activityBadge.textContent = "Driver arrived";
+  recentActivityText.textContent = "Your driver has arrived at the pickup location.";
+
+  const rideRequest = JSON.parse(localStorage.getItem("saferideRideRequest")) || {};
+  rideRequest.status = "Driver arrived";
+  rideRequest.eta = "Arrived";
+  localStorage.setItem("saferideRideRequest", JSON.stringify(rideRequest));
+
+  announceDashboardUpdate("Driver has arrived at the pickup location.");
+});
+
+completeBtn.addEventListener("click", () => {
+  status.textContent = "Ride completed";
+  eta.textContent = "Completed";
+  statusBadge.textContent = "Completed";
+  activityBadge.textContent = "Ride completed";
+  recentActivityText.textContent = "Ride completed successfully.";
+  requestBtn.textContent = "Request Driver";
+  requestBtn.disabled = false;
+
+  const rideRequest = JSON.parse(localStorage.getItem("saferideRideRequest")) || {};
+  rideRequest.status = "Ride completed";
+  rideRequest.eta = "Completed";
+  localStorage.setItem("saferideRideRequest", JSON.stringify(rideRequest));
+
+  announceDashboardUpdate("Ride completed successfully.");
 });
 
 renderSavedVehicles();
