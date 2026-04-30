@@ -16,7 +16,19 @@
     <header class="dashboard-header-centered">
       <div></div>
       <h1 class="logo-centered">Saferide</h1>
-      <div></div>
+      <div class="account-menu-container">
+        <button id="accountBtn" class="secondary-btn" type="button" aria-label="Open account settings and information">
+          Settings & Account
+        </button>
+
+        <div id="accountDropdown" class="account-dropdown" role="menu" aria-label="Account settings menu">
+          <p><strong>Name:</strong> <span id="dropdownUserName">User</span></p>
+          <p><strong>Vehicle:</strong> <span id="dropdownVehicle">Not set</span></p>
+          <button id="logoutBtn" class="main-btn" type="button" aria-label="Log out of your account">
+            Log Out
+          </button>
+        </div>
+      </div>
     </header>
   
     <div class="dashboard-container dashboard-app-layout">

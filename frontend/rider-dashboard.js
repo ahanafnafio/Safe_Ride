@@ -31,6 +31,11 @@ const arrivedBtn = document.getElementById("arrivedBtn");
 const completeBtn = document.getElementById("completeBtn");
 const themeToggle = document.getElementById("themeToggle");
 const dashboardStatusMessage = document.getElementById("dashboardStatusMessage");
+const accountBtn = document.getElementById("accountBtn");
+const accountDropdown = document.getElementById("accountDropdown");
+const dropdownUserName = document.getElementById("dropdownUserName");
+const dropdownVehicle = document.getElementById("dropdownVehicle");
+const logoutBtn = document.getElementById("logoutBtn");
 
 let map;
 let directionsService;
@@ -103,6 +108,15 @@ function loadUserName() {
   }
 }
 
+function updateAccountDropdown() {
+  const storedName = localStorage.getItem("saferideUserName") || localStorage.getItem("firstName") || "User";
+  const selectedVehicle = getSelectedVehicleObject();
+  const vehicleName = selectedVehicle ? selectedVehicle.name : savedVehicle.textContent || "Not set";
+
+  dropdownUserName.textContent = storedName;
+  dropdownVehicle.textContent = vehicleName;
+}
+
 function getSavedVehicles() {
   return JSON.parse(localStorage.getItem("saferideVehicles")) || [];
 }
@@ -155,6 +169,22 @@ themeToggle.addEventListener("click", () => {
   themeToggle.textContent = isDarkMode ? "☀️" : "🌙";
 
   announceDashboardUpdate(isDarkMode ? "Dark mode enabled." : "Light mode enabled.");
+});
+
+accountBtn.addEventListener("click", () => {
+  updateAccountDropdown();
+  accountDropdown.classList.toggle("show");
+
+  const isOpen = accountDropdown.classList.contains("show");
+  accountBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  announceDashboardUpdate(isOpen ? "Account settings opened." : "Account settings closed.");
+});
+
+document.addEventListener("click", (event) => {
+  if (!accountDropdown.contains(event.target) && !accountBtn.contains(event.target)) {
+    accountDropdown.classList.remove("show");
+    accountBtn.setAttribute("aria-expanded", "false");
+  }
 });
 
 function initMap() {
@@ -244,6 +274,7 @@ addVehicleBtn.addEventListener("click", () => {
 
   savedVehicleSelect.value = newVehicle.vehicleId;
   savedVehicle.textContent = newVehicle.name;
+  updateAccountDropdown();
   vehicleFeedback.textContent = `${newVehicle.name} added to saved vehicles.`;
   announceDashboardUpdate(`${newVehicle.name} added to saved vehicles.`);
   addVehicleToApi(newVehicle);
@@ -261,6 +292,7 @@ savedVehicleSelect.addEventListener("change", () => {
     savedVehicle.textContent = "Not set";
     vehicleFeedback.textContent = "No saved vehicle selected.";
   }
+  updateAccountDropdown();
 });
 
 locationBtn.addEventListener("click", () => {
@@ -340,6 +372,7 @@ requestBtn.addEventListener("click", () => {
   }
 
   savedVehicle.textContent = selectedVehicle ? selectedVehicle.name : vehicleValue;
+  updateAccountDropdown();
 
   const rideRequest = {
     sessionId: getSessionId(),
@@ -469,10 +502,8 @@ completeBtn.addEventListener("click", () => {
 renderSavedVehicles();
 applySavedTheme();
 loadUserName();
-updatePreview();
-resetRideState();
+updateAccountDropdown();
 
-
-document.getElementById("logoutBtn").addEventListener("click", () => {
+logoutBtn.addEventListener("click", () => {
   window.location.href = "logout.html";
 });

@@ -915,3 +915,71 @@ label {
   background: #334155;
   color: #f9fafb;
 }
+
+/* Account settings dropdown */
+.account-menu-container {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.account-dropdown {
+  display: none;
+  position: absolute;
+  top: 52px;
+  right: 0;
+  width: 260px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.14);
+  z-index: 1500;
+}
+
+.account-dropdown.show {
+  display: block;
+}
+
+.account-dropdown p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #111827;
+}
+
+.account-dropdown .main-btn {
+  margin-top: 8px;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.dark-mode .account-dropdown {
+  background: #1e293b;
+  border: 1px solid #334155;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode .account-dropdown p,
+.dark-mode .account-dropdown strong,
+.dark-mode #dropdownUserName,
+.dark-mode #dropdownVehicle {
+  color: #f9fafb !important;
+}
+/* Prevent account button from overlapping dark mode toggle */
+.dashboard-header-centered {
+  padding-right: 86px;
+}
+
+.account-menu-container {
+  min-width: 170px;
+}
+
+#accountBtn {
+  white-space: nowrap;
+}
+
+.theme-toggle {
+  top: 22px;
+  right: 24px;
+}
