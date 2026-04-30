@@ -27,19 +27,14 @@ const mapSubtext = document.querySelector(".map-overlay-text span");
 
 const locationBtn = document.getElementById("locationBtn");
 const requestBtn = document.getElementById("requestBtn");
-const arrivedBtn = document.getElementById("arrivedBtn");
-const completeBtn = document.getElementById("completeBtn");
 const themeToggle = document.getElementById("themeToggle");
 const dashboardStatusMessage = document.getElementById("dashboardStatusMessage");
-const accountBtn = document.getElementById("accountBtn");
-const accountDropdown = document.getElementById("accountDropdown");
-const dropdownUserName = document.getElementById("dropdownUserName");
-const dropdownVehicle = document.getElementById("dropdownVehicle");
-const logoutBtn = document.getElementById("logoutBtn");
 
 let map;
 let directionsService;
 let directionsRenderer;
+let routeLine;
+let geocoder;
 
 const API_BASE_URL = "http://localhost:5044/api";
 
@@ -54,7 +49,7 @@ function getSessionId() {
   return sessionId;
 }
 
-async function addVehicleToApi(vehicleItem) {
+async function addVehicleToApi(vehicleName) {
   try {
     const response = await fetch(`${API_BASE_URL}/Match/vehicle/add`, {
       method: "POST",
@@ -63,8 +58,11 @@ async function addVehicleToApi(vehicleItem) {
       },
       body: JSON.stringify({
         sessionId: getSessionId(),
-        vehicleId: vehicleItem.vehicleId,
-        name: vehicleItem.name
+        make: vehicleName,
+        model: "",
+        color: "",
+        plate: "",
+        notes: ""
       })
     });
 
@@ -74,8 +72,25 @@ async function addVehicleToApi(vehicleItem) {
 
     return await response.json();
   } catch (error) {
-    console.warn("Vehicle API unavailable. Vehicle saved locally for demo.", error);
+    console.warn("Vehicle API unavailable.", error);
     return null;
+  }
+}
+
+async function getVehiclesFromApi() {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/Match/myvehicles?sessionId=${getSessionId()}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to load vehicles");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to fetch vehicles:", error);
+    return [];
   }
 }
 
@@ -108,15 +123,6 @@ function loadUserName() {
   }
 }
 
-function updateAccountDropdown() {
-  const storedName = localStorage.getItem("saferideUserName") || localStorage.getItem("firstName") || "User";
-  const selectedVehicle = getSelectedVehicleObject();
-  const vehicleName = selectedVehicle ? selectedVehicle.name : savedVehicle.textContent || "Not set";
-
-  dropdownUserName.textContent = storedName;
-  dropdownVehicle.textContent = vehicleName;
-}
-
 function getSavedVehicles() {
   return JSON.parse(localStorage.getItem("saferideVehicles")) || [];
 }
@@ -125,22 +131,28 @@ function saveVehicles(vehicles) {
   localStorage.setItem("saferideVehicles", JSON.stringify(vehicles));
 }
 
-function renderSavedVehicles() {
-  const vehicles = getSavedVehicles();
+async function renderSavedVehicles() {
+  const vehicles = await getVehiclesFromApi();
 
-  savedVehicleSelect.innerHTML = '<option value="">No saved vehicle selected</option>';
+  savedVehicleSelect.innerHTML =
+    '<option value="">No saved vehicle selected</option>';
 
   vehicles.forEach((vehicleItem) => {
     const option = document.createElement("option");
+
     option.value = vehicleItem.vehicleId;
-    option.textContent = vehicleItem.name;
+    option.textContent = vehicleItem.make;
+
     savedVehicleSelect.appendChild(option);
   });
 }
 
-function getSelectedVehicleObject() {
-  const vehicles = getSavedVehicles();
-  return vehicles.find((vehicleItem) => vehicleItem.vehicleId === savedVehicleSelect.value);
+async function getSelectedVehicleObject() {
+  const vehicles = await getVehiclesFromApi();
+
+  return vehicles.find(
+    (vehicleItem) => vehicleItem.vehicleId == savedVehicleSelect.value
+  );
 }
 
 function applySavedTheme() {
@@ -169,22 +181,6 @@ themeToggle.addEventListener("click", () => {
   themeToggle.textContent = isDarkMode ? "☀️" : "🌙";
 
   announceDashboardUpdate(isDarkMode ? "Dark mode enabled." : "Light mode enabled.");
-});
-
-accountBtn.addEventListener("click", () => {
-  updateAccountDropdown();
-  accountDropdown.classList.toggle("show");
-
-  const isOpen = accountDropdown.classList.contains("show");
-  accountBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
-  announceDashboardUpdate(isOpen ? "Account settings opened." : "Account settings closed.");
-});
-
-document.addEventListener("click", (event) => {
-  if (!accountDropdown.contains(event.target) && !accountBtn.contains(event.target)) {
-    accountDropdown.classList.remove("show");
-    accountBtn.setAttribute("aria-expanded", "false");
-  }
 });
 
 function initMap() {
@@ -217,6 +213,23 @@ function initMap() {
   if (mapSubtext) {
     mapSubtext.textContent = "Map connected. Waiting for trip details.";
   }
+  geocoder = new google.maps.Geocoder();
+}
+
+function geocodeAddress(address) {
+  return new Promise((resolve, reject) => {
+    geocoder.geocode({ address: address }, (results, statusResult) => {
+      if (statusResult === "OK" && results[0]) {
+        resolve({
+          address: results[0].formatted_address,
+          lat: results[0].geometry.location.lat(),
+          lon: results[0].geometry.location.lng()
+        });
+      } else {
+        reject(`Could not geocode address: ${address}`);
+      }
+    });
+  });
 }
 
 window.initMap = initMap;
@@ -251,7 +264,7 @@ function resetRideState() {
   }
 }
 
-addVehicleBtn.addEventListener("click", () => {
+addVehicleBtn.addEventListener("click", async () => {
   const vehicleName = vehicle.value.trim();
 
   if (!vehicleName) {
@@ -260,39 +273,33 @@ addVehicleBtn.addEventListener("click", () => {
     return;
   }
 
-  const vehicles = getSavedVehicles();
-  const newVehicle = {
-    vehicleId: `vehicle-${Date.now()}`,
-    sessionId: getSessionId(),
-    name: vehicleName,
-    createdAt: new Date().toISOString()
-  };
+  const result = await addVehicleToApi(vehicleName);
 
-  vehicles.push(newVehicle);
-  saveVehicles(vehicles);
-  renderSavedVehicles();
+  if (result == null) {
+    vehicleFeedback.textContent = "Vehicle could not be added.";
+    announceDashboardUpdate("Vehicle could not be added.");
+    return;
+  }
 
-  savedVehicleSelect.value = newVehicle.vehicleId;
-  savedVehicle.textContent = newVehicle.name;
-  updateAccountDropdown();
-  vehicleFeedback.textContent = `${newVehicle.name} added to saved vehicles.`;
-  announceDashboardUpdate(`${newVehicle.name} added to saved vehicles.`);
-  addVehicleToApi(newVehicle);
+  vehicleFeedback.textContent = `${vehicleName} added to saved vehicles.`;
+  savedVehicle.textContent = vehicleName;
+  announceDashboardUpdate(`${vehicleName} added to saved vehicles.`);
+
+  await renderSavedVehicles();
 });
 
-savedVehicleSelect.addEventListener("change", () => {
-  const selectedVehicle = getSelectedVehicleObject();
+savedVehicleSelect.addEventListener("change", async () => {
+  const selectedVehicle = await getSelectedVehicleObject();
 
   if (selectedVehicle) {
-    vehicle.value = selectedVehicle.name;
-    savedVehicle.textContent = selectedVehicle.name;
-    vehicleFeedback.textContent = `${selectedVehicle.name} selected for this ride.`;
-    announceDashboardUpdate(`${selectedVehicle.name} selected for this ride.`);
+    vehicle.value = selectedVehicle.make;
+    savedVehicle.textContent = selectedVehicle.make;
+    vehicleFeedback.textContent = `${selectedVehicle.make} selected for this ride.`;
+    announceDashboardUpdate(`${selectedVehicle.make} selected for this ride.`);
   } else {
     savedVehicle.textContent = "Not set";
     vehicleFeedback.textContent = "No saved vehicle selected.";
   }
-  updateAccountDropdown();
 });
 
 locationBtn.addEventListener("click", () => {
@@ -350,160 +357,94 @@ locationBtn.addEventListener("click", () => {
 pickup.addEventListener("input", updatePreview);
 destination.addEventListener("input", updatePreview);
 
-requestBtn.addEventListener("click", () => {
+requestBtn.addEventListener("click", async () => {
   const pickupValue = pickup.value.trim();
   const destinationValue = destination.value.trim();
   const vehicleValue = vehicle.value.trim();
-  const selectedVehicle = getSelectedVehicleObject();
-  const selectedVehicleId = selectedVehicle ? selectedVehicle.vehicleId : null;
   const pickupTimeValue = pickupTime.value.trim();
   const contactValue = contactNumber.value.trim();
-
-  if (
-    !pickupValue ||
-    !destinationValue ||
-    !vehicleValue ||
-    !pickupTimeValue ||
-    !contactValue
-  ) {
+  if (!pickupValue || !destinationValue || !vehicleValue || !pickupTimeValue || !contactValue) {
     alert("Please complete all trip fields before requesting a driver.");
-    announceDashboardUpdate("Please complete all trip fields before requesting a driver.");
     return;
-  }
-
-  savedVehicle.textContent = selectedVehicle ? selectedVehicle.name : vehicleValue;
-  updateAccountDropdown();
-
-  const rideRequest = {
-    sessionId: getSessionId(),
-    pickup: pickupValue,
-    destination: destinationValue,
-    vehicle: selectedVehicle ? selectedVehicle.name : vehicleValue,
-    vehicleId: selectedVehicleId,
-    pickupTime: pickupTimeValue,
-    contact: contactValue,
-    status: "Requested",
-    driver: "Not assigned",
-    eta: "5-8 min"
-  };
-
-  localStorage.setItem("saferideRideRequest", JSON.stringify(rideRequest));
-  requestRideFromApi(rideRequest);
-
-  if (mapText) {
-    mapText.textContent = `Route: ${pickupValue} → ${destinationValue}`;
-  }
-
-  if (mapSubtext) {
-    mapSubtext.textContent = "Generating route preview and driver match...";
-  }
-
-  if (directionsService && directionsRenderer) {
-    directionsService.route(
-      {
-        origin: pickupValue,
-        destination: destinationValue,
-        travelMode: google.maps.TravelMode.DRIVING
-      },
-      (result, statusResult) => {
-        if (statusResult === "OK") {
-          directionsRenderer.setDirections(result);
-
-          const bounds = new google.maps.LatLngBounds();
-          result.routes[0].legs.forEach((leg) => {
-            bounds.extend(leg.start_location);
-            bounds.extend(leg.end_location);
-          });
-          map.fitBounds(bounds);
-
-          if (mapSubtext) {
-            mapSubtext.textContent = "Live route loaded on map.";
-          }
-        } else {
-          if (mapSubtext) {
-            mapSubtext.textContent = "Route preview unavailable. Check location input.";
-          }
-        }
-      }
-    );
   }
 
   requestBtn.disabled = true;
   requestBtn.textContent = "Finding Driver...";
-  announceDashboardUpdate("Ride request submitted. Finding a driver.");
 
   status.textContent = "Driver requested";
   driver.textContent = "Searching...";
-  eta.textContent = "5-8 min";
+  eta.textContent = "--";
   statusBadge.textContent = "Requested";
-  activityBadge.textContent = "Trip requested";
-  recentActivityText.textContent = `Trip requested from ${pickupValue} to ${destinationValue}.`;
-  tripFormStatus.textContent = "Submitted";
 
-  setTimeout(() => {
-    status.textContent = "Driver assigned";
-    driver.textContent = "James Carter";
-    eta.textContent = "4 min";
-    statusBadge.textContent = "Matched";
-    activityBadge.textContent = "Driver assigned";
-    recentActivityText.textContent = `James Carter is on the way to ${pickupValue}.`;
-    announceDashboardUpdate("Driver assigned. James Carter is on the way.");
+  const rideRequest = {
+    sessionId: getSessionId(),
 
-    if (mapSubtext) {
-      mapSubtext.textContent = "Driver matched. Route active on map preview.";
-    }
-  }, 1500);
+    pickupAddress: pickupValue,
+    pickupLat: 33.2107,
+    pickupLon: -97.1504,
 
-  setTimeout(() => {
-    status.textContent = "En route";
-    eta.textContent = "2 min";
-    statusBadge.textContent = "En Route";
-    activityBadge.textContent = "Driver en route";
-    recentActivityText.textContent = `Your driver is en route to ${pickupValue}.`;
+    dropoffAddress: destinationValue,
+    dropoffLat: 33.2257,
+    dropoffLon: -97.1290,
 
-    requestBtn.textContent = "Driver Requested";
-    requestBtn.disabled = false;
-    announceDashboardUpdate("Driver is en route. Estimated arrival is 2 minutes.");
-  }, 3500);
-});
+    notes: `Pickup time: ${pickupTimeValue}. Contact: ${contactValue}`,
+    vehicleId: 1
+  };
 
-arrivedBtn.addEventListener("click", () => {
-  status.textContent = "Driver arrived";
-  eta.textContent = "Arrived";
-  statusBadge.textContent = "Arrived";
-  activityBadge.textContent = "Driver arrived";
-  recentActivityText.textContent = "Your driver has arrived at the pickup location.";
+  console.log("Sending ride request:", rideRequest);
 
-  const rideRequest = JSON.parse(localStorage.getItem("saferideRideRequest")) || {};
-  rideRequest.status = "Driver arrived";
-  rideRequest.eta = "Arrived";
-  localStorage.setItem("saferideRideRequest", JSON.stringify(rideRequest));
+  const result = await requestRideFromApi(rideRequest);
 
-  announceDashboardUpdate("Driver has arrived at the pickup location.");
-});
+console.log("Backend ride result:", result);
+console.log("Backend encodedPolyline:", result.encodedPolyline);
 
-completeBtn.addEventListener("click", () => {
-  status.textContent = "Ride completed";
-  eta.textContent = "Completed";
-  statusBadge.textContent = "Completed";
-  activityBadge.textContent = "Ride completed";
-  recentActivityText.textContent = "Ride completed successfully.";
-  requestBtn.textContent = "Request Driver";
+if (!result) {
+  alert("Ride request failed.");
   requestBtn.disabled = false;
+  requestBtn.textContent = "Request Driver";
+  return;
+}
 
-  const rideRequest = JSON.parse(localStorage.getItem("saferideRideRequest")) || {};
-  rideRequest.status = "Ride completed";
-  rideRequest.eta = "Completed";
-  localStorage.setItem("saferideRideRequest", JSON.stringify(rideRequest));
+if (result.encodedPolyline && google.maps.geometry) {
+  console.log("Drawing route from BACKEND polyline");
 
-  announceDashboardUpdate("Ride completed successfully.");
+  if (routeLine) {
+    routeLine.setMap(null);
+  }
+
+  const decodedPath = google.maps.geometry.encoding.decodePath(result.encodedPolyline);
+
+  routeLine = new google.maps.Polyline({
+    path: decodedPath,
+    map: map,
+    strokeWeight: 5
+  });
+
+  const bounds = new google.maps.LatLngBounds();
+  decodedPath.forEach(point => bounds.extend(point));
+  map.fitBounds(bounds);
+
+  if (directionsRenderer) {
+    directionsRenderer.setDirections({ routes: [] });
+  }
+}
+
+  status.textContent = result.rideStatus;
+  driver.textContent = `${result.driverFirstName} ${result.driverLastName}`;
+  eta.textContent = `${Math.round(result.driverEtaSeconds / 60)} min`;
+  statusBadge.textContent = "Matched";
+
+  requestBtn.disabled = false;
+  requestBtn.textContent = "Driver Requested";
 });
 
 renderSavedVehicles();
 applySavedTheme();
 loadUserName();
-updateAccountDropdown();
+updatePreview();
+resetRideState();
 
-logoutBtn.addEventListener("click", () => {
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
   window.location.href = "logout.html";
 });

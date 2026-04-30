@@ -119,6 +119,7 @@ loginForm.addEventListener("submit", function (e) {
 
       if (data.firstName) {
         localStorage.setItem("firstName", data.firstName);
+        localStorage.setItem("email", email);
         localStorage.setItem("saferideUserName", data.firstName);
       } else {
         localStorage.setItem("saferideUserName", email.split("@")[0] || "User");

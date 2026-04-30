@@ -94,20 +94,67 @@ themeToggle.addEventListener("click", function() { // Toggle dark mode class on 
     }
 });
 
-availableButton.addEventListener("click", function() { // Set driver status to online and update UI
-    driverStatus.textContent = "Online";
-    driverStatus.classList.remove("offline");
-    driverStatus.classList.add("online");
+availableButton.addEventListener("click", function() {
 
-    accountStatus.textContent = "Online";
+    fetch("http://localhost:5044/api/match/driver/online", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            firstName: localStorage.getItem("firstName"),
+            lastName: "Temp",
+            email: localStorage.getItem("email"),
+            passwordHash: "temp",
+
+            address: "UNT",
+            lat: 33.2107,
+            lon: -97.1504
+        })
+    })
+    .then(response => response.text())
+    .then(data => {
+
+        console.log("Driver online:", data);
+
+        // Update UI ONLY after successful backend response
+        driverStatus.textContent = "Online";
+        driverStatus.classList.remove("offline");
+        driverStatus.classList.add("online");
+
+        accountStatus.textContent = "Online";
+    })
+    .catch(error => {
+        console.error("Could not go online:", error);
+    });
 });
 
-offlineButton.addEventListener("click", function() { // Set driver status to offline and update UI
-    driverStatus.textContent = "Offline";
-    driverStatus.classList.remove("online");
-    driverStatus.classList.add("offline");
+offlineButton.addEventListener("click", function() {
 
-    accountStatus.textContent = "Offline";
+    fetch("http://localhost:5044/api/match/driver/offline", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: localStorage.getItem("email")
+        })
+    })
+    .then(response => response.text())
+    .then(data => {
+
+        console.log("Driver offline:", data);
+
+        // Update UI ONLY after successful backend response
+        driverStatus.textContent = "Offline";
+        driverStatus.classList.remove("online");
+        driverStatus.classList.add("offline");
+
+        accountStatus.textContent = "Offline";
+    })
+    .catch(error => {
+        console.error("Could not go offline:", error);
+    });
 });
 
 assignRideButton.addEventListener("click", function() { // Assign a ride to the driver

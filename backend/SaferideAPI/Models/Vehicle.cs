@@ -9,7 +9,14 @@ namespace Saferide.Models
         private string color;
         private string plate;
         private string notes;
-        // Constrcutor
+
+        public int VehicleId => vehicleId;
+        public string Make => make;
+        public string Model => model;
+        public string Color => color;
+        public string Plate => plate;
+        public string Notes => notes;
+
         public Vehicle(string make, string model, string color, string plate, string notes)
         {
             vehicleId = nextVehicleId++;
