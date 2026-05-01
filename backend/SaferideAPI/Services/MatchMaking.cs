@@ -59,18 +59,18 @@ namespace Saferide.Services
             // Return assignment + route info
             return new RideAssignmentResult
             {
-                RideId = newRide.GetRideId(),
+                RideId = newRide.GetRideId(), // RIDEID TO KNOW WHERE TO PICK OFF
                 RideStatus = newRide.GetStatus(),
                 DriverFirstName = driver.GetFirstName(),
                 DriverLastName = driver.GetLastName(),
                 DriverEtaSeconds = bestResult.DurationSeconds,
-                RouteDuration = driverToPickupRoute.Duration ?? "",
-                RouteDistanceMeters = driverToPickupRoute.DistanceMeters,
-                EncodedPolyline = driverToPickupRoute.EncodedPolyline ?? ""
+                RouteDuration = driverToPickupRoute.Duration ?? "", // FROM DRIVER TO PICKUP
+                RouteDistanceMeters = driverToPickupRoute.DistanceMeters, // FROM DRIVER TO PICKUP
+                EncodedPolyline = driverToPickupRoute.EncodedPolyline ?? "" // FROM DRIVER TO PICKUP
             };
         }
 
-        public async Task<RideAssignmentResult?> CalculateFinalRoute(int rideId)
+        public Ride? GetRide(int rideId)
         {
             Ride? currentRide = null;
             foreach (Ride r in rides)
@@ -85,6 +85,25 @@ namespace Saferide.Services
             {
                 return null;
             }
+            return currentRide;
+        }
+
+        public async Task<RideAssignmentResult?> CalculateFinalRoute(int rideId) // Called via driver arrived endpoint ("Driver Arrived" button in ride status on DB)
+        {
+            Ride? currentRide = null;
+            foreach (Ride r in rides)
+            {
+                if (rideId == r.GetRideId())
+                {
+                    currentRide = r;
+                    break;
+                }
+            }
+            
+            if (currentRide == null)
+            {
+                return null;
+            }
 
             RouteResult? tripRoute = await routingService.ComputeRouteAsync(currentRide.GetPickup(), currentRide.GetDropoff());
 
@@ -93,7 +112,7 @@ namespace Saferide.Services
                 return null;
             }
 
-            currentRide.SetStatus("InProgress");
+            currentRide.SetStatus("InProgress"); // once the ride is completed, we set it to completed
             
             return new RideAssignmentResult
             {
