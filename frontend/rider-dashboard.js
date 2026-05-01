@@ -383,7 +383,7 @@ requestBtn.addEventListener("click", () => {
     pickupTime: pickupTimeValue,
     contact: contactValue,
     status: "Requested",
-    driver: "Not assigned",
+    driver: "Kendra M.",
     eta: "5-8 min"
   };
 
@@ -442,12 +442,12 @@ requestBtn.addEventListener("click", () => {
 
   setTimeout(() => {
     status.textContent = "Driver assigned";
-    driver.textContent = "James Carter";
+    driver.textContent = "Kendra M.";
     eta.textContent = "4 min";
     statusBadge.textContent = "Matched";
     activityBadge.textContent = "Driver assigned";
-    recentActivityText.textContent = `James Carter is on the way to ${pickupValue}.`;
-    announceDashboardUpdate("Driver assigned. James Carter is on the way.");
+    recentActivityText.textContent = `Kendra M. is on the way to ${pickupValue}.`;
+    announceDashboardUpdate("Driver assigned. Kendra M. is on the way.");
 
     if (mapSubtext) {
       mapSubtext.textContent = "Driver matched. Route active on map preview.";
@@ -494,6 +494,7 @@ completeBtn.addEventListener("click", () => {
   const rideRequest = JSON.parse(localStorage.getItem("saferideRideRequest")) || {};
   rideRequest.status = "Ride completed";
   rideRequest.eta = "Completed";
+  rideRequest.driver = "Kendra M.";
   localStorage.setItem("saferideRideRequest", JSON.stringify(rideRequest));
 
   announceDashboardUpdate("Ride completed successfully.");
