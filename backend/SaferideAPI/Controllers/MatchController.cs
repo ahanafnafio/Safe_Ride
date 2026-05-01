@@ -67,6 +67,40 @@ namespace Saferide.Controllers
             return Ok(result);
         }
 
+        // POST: api/match/ride/arrived
+        [HttpPost("ride/arrived")]
+        public async Task<IActionResult> DriverArrived([FromBody] RideStepRequest request)
+        {
+            var result = await _matchMaking.CalculateFinalRoute(request.RideId);
+
+            if (result == null)
+            {
+                return NotFound("Ride not found or final route could not be calculated.");
+            }
+
+            return Ok(result);
+        }
+
+        // POST: api/match/ride/complete
+        [HttpPost("ride/complete")]
+        public IActionResult CompleteRide([FromBody] RideStepRequest request)
+        {
+            Ride? ride = _matchMaking.GetRide(request.RideId);
+
+            if (ride == null)
+            {
+                return NotFound("Ride not found.");
+            }
+
+            ride.SetStatus("Completed");
+
+            return Ok(new
+            {
+                rideId = ride.GetRideId(),
+                rideStatus = ride.GetStatus()
+            });
+        }
+
         // ================= VEHICLE =================
 
         // POST: api/match/vehicle/add
@@ -144,6 +178,11 @@ namespace Saferide.Controllers
 
         public string Notes { get; set; } = "";
         public int VehicleId { get; set; }
+    }
+
+    public class RideStepRequest
+    {
+        public int RideId { get; set; }
     }
 
     public class AddVehicleRequest
