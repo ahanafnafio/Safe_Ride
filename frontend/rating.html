@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rate Driver</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Rate Your Driver</h1>
+      <p id="driverName">Driver: Not assigned</p>
+
+      <div class="ratingStars" aria-label="Driver rating">
+        <button class="starBtn" data-rating="1">★</button>
+        <button class="starBtn" data-rating="2">★</button>
+        <button class="starBtn" data-rating="3">★</button>
+        <button class="starBtn" data-rating="4">★</button>
+        <button class="starBtn" data-rating="5">★</button>
+      </div>
+
+      <p id="ratingText">Select a rating</p>
+
+      <label for="ratingComment">Optional comment</label>
+      <textarea id="ratingComment" placeholder="How was your ride?"></textarea>
+
+      <button id="submitRatingBtn" class="loginBtn">Submit Rating</button>
+      <p id="ratingMessage" class="error-message"></p>
+    </section>
+  </main>
+
+  <script src="rating.js"></script>
+</body>
+</html>

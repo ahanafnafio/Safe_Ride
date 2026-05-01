@@ -497,6 +497,7 @@ completeBtn.addEventListener("click", () => {
   localStorage.setItem("saferideRideRequest", JSON.stringify(rideRequest));
 
   announceDashboardUpdate("Ride completed successfully.");
+  window.location.href = "rating.html";
 });
 
 renderSavedVehicles();

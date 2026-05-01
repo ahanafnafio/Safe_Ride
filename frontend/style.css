@@ -983,3 +983,31 @@ label {
   top: 22px;
   right: 24px;
 }
+
+.ratingStars {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.starBtn {
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.starBtn.selected {
+  color: #f5b301;
+}
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}

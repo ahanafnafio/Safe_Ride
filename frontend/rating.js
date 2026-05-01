@@ -1,0 +1,50 @@
+const driverName = document.getElementById("driverName");
+const starButtons = document.querySelectorAll(".starBtn");
+const ratingText = document.getElementById("ratingText");
+const ratingComment = document.getElementById("ratingComment");
+const submitRatingBtn = document.getElementById("submitRatingBtn");
+const ratingMessage = document.getElementById("ratingMessage");
+
+let selectedRating = 0;
+
+const rideRequest = JSON.parse(localStorage.getItem("saferideRideRequest")) || {};
+driverName.textContent = `Driver: ${rideRequest.driver || "Not assigned"}`;
+
+starButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    selectedRating = Number(button.dataset.rating);
+
+    starButtons.forEach((star) => {
+      const starValue = Number(star.dataset.rating);
+      star.classList.toggle("selected", starValue <= selectedRating);
+    });
+
+    ratingText.textContent = `${selectedRating} out of 5 stars selected`;
+    ratingMessage.textContent = "";
+  });
+});
+
+submitRatingBtn.addEventListener("click", () => {
+  if (selectedRating === 0) {
+    ratingMessage.textContent = "Please select a rating before submitting.";
+    return;
+  }
+
+  const ratingData = {
+    sessionId: rideRequest.sessionId,
+    driver: rideRequest.driver,
+    pickup: rideRequest.pickup,
+    destination: rideRequest.destination,
+    rating: selectedRating,
+    comment: ratingComment.value.trim(),
+    submittedAt: new Date().toISOString()
+  };
+
+  localStorage.setItem("saferideDriverRating", JSON.stringify(ratingData));
+
+  ratingMessage.textContent = "Thank you! Your rating has been submitted.";
+
+  setTimeout(() => {
+    window.location.href = "rider-dashboard.html";
+  }, 1200);
+});
