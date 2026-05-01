@@ -24,10 +24,10 @@ let currentRide = null;
 
 function getDemoRide() { // Return a hardcoded demo ride for testing purposes
     return {
-        passenger: "Alex M.",
-        pickup: "Iconic Village, Denton, TX",
-        destination: "UNT Union, Denton, TX",
-        vehicle: "Blue Honda Civic ADB0023"
+        passenger: "Ben Nelson",
+        pickup: "Lucky Lou's, Denton, TX",
+        destination: "Discovery Park, Denton, TX",
+        vehicle: "White Honda Pilot ADB0023"
     };
 }
 
@@ -182,7 +182,7 @@ assignRideButton.addEventListener("click", function() { // Assign a ride to the 
     rideActionButton.textContent = "Mark Picked Up";
     rideActionButton.classList.remove("secondaryBtn");
 
-    showRoute("Denton Square, Denton, TX", currentRide.pickup);
+    showRoute("410 Avenue C #308j, Denton, TX 76201", currentRide.pickup);
 });
 
 rideActionButton.addEventListener("click", function() { // Handle ride progression based on current step

@@ -30,11 +30,15 @@ const requestBtn = document.getElementById("requestBtn");
 const themeToggle = document.getElementById("themeToggle");
 const dashboardStatusMessage = document.getElementById("dashboardStatusMessage");
 
+const arrivedBtn = document.getElementById("arrivedBtn");
+const completeBtn = document.getElementById("completeBtn");
+
 let map;
 let directionsService;
 let directionsRenderer;
 let routeLine;
 let geocoder;
+let currentRideId = null;
 
 const API_BASE_URL = "http://localhost:5044/api";
 
@@ -376,27 +380,41 @@ requestBtn.addEventListener("click", async () => {
   eta.textContent = "--";
   statusBadge.textContent = "Requested";
 
+  let pickupLocation;
+  let dropoffLocation;
+
+  try {
+    pickupLocation = await geocodeAddress(pickupValue);
+    dropoffLocation = await geocodeAddress(destinationValue);
+  } catch (err) {
+    alert("Could not find one of the addresses.");
+    console.error(err);
+    requestBtn.disabled = false;
+    requestBtn.textContent = "Request Driver";
+    return;
+  }
+
+  console.log("Geocoded pickup:", pickupLocation);
+  console.log("Geocoded dropoff:", dropoffLocation);
+
   const rideRequest = {
     sessionId: getSessionId(),
 
-    pickupAddress: pickupValue,
-    pickupLat: 33.2107,
-    pickupLon: -97.1504,
+    pickupAddress: pickupLocation.address,
+    pickupLat: pickupLocation.lat,
+    pickupLon: pickupLocation.lon,
 
-    dropoffAddress: destinationValue,
-    dropoffLat: 33.2257,
-    dropoffLon: -97.1290,
+    dropoffAddress: dropoffLocation.address,
+    dropoffLat: dropoffLocation.lat,
+    dropoffLon: dropoffLocation.lon,
 
     notes: `Pickup time: ${pickupTimeValue}. Contact: ${contactValue}`,
     vehicleId: 1
   };
 
-  console.log("Sending ride request:", rideRequest);
+console.log("Sending ride request:", rideRequest);
 
-  const result = await requestRideFromApi(rideRequest);
-
-console.log("Backend ride result:", result);
-console.log("Backend encodedPolyline:", result.encodedPolyline);
+const result = await requestRideFromApi(rideRequest);
 
 if (!result) {
   alert("Ride request failed.");
@@ -404,6 +422,13 @@ if (!result) {
   requestBtn.textContent = "Request Driver";
   return;
 }
+
+console.log("Backend ride result:", result);
+console.log("Backend encodedPolyline:", result.encodedPolyline);
+
+currentRideId = result.rideId;
+console.log("Stored rideId:", currentRideId);
+
 
 if (result.encodedPolyline && google.maps.geometry) {
   console.log("Drawing route from BACKEND polyline");
@@ -417,7 +442,9 @@ if (result.encodedPolyline && google.maps.geometry) {
   routeLine = new google.maps.Polyline({
     path: decodedPath,
     map: map,
-    strokeWeight: 5
+    strokeWeight: 5,
+    strokeColor: "#4285F4",
+    strokeOpacity: 1.0
   });
 
   const bounds = new google.maps.LatLngBounds();
@@ -447,4 +474,61 @@ resetRideState();
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
   window.location.href = "logout.html";
+});
+
+arrivedBtn.addEventListener("click", async () => {
+  if (!currentRideId) {
+    alert("No active ride yet.");
+    return;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/Match/ride/arrived`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rideId: currentRideId })
+  });
+
+  const result = await response.json();
+
+  if (routeLine) {
+    routeLine.setMap(null);
+  }
+
+  const decodedPath = google.maps.geometry.encoding.decodePath(result.encodedPolyline);
+
+  routeLine = new google.maps.Polyline({
+    path: decodedPath,
+    map: map,
+    strokeWeight: 5
+  });
+
+  const bounds = new google.maps.LatLngBounds();
+  decodedPath.forEach(point => bounds.extend(point));
+  map.fitBounds(bounds);
+
+  status.textContent = result.rideStatus;
+  statusBadge.textContent = "In Progress";
+  const seconds = parseInt(result.routeDuration.replace("s", ""));
+  const minutes = Math.round(seconds / 60);
+  eta.textContent = `${minutes} min`;
+});
+
+completeBtn.addEventListener("click", async () => {
+  if (!currentRideId) {
+    alert("No active ride yet.");
+    return;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/Match/ride/complete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rideId: currentRideId })
+  });
+
+  const result = await response.json();
+
+  status.textContent = result.rideStatus;
+  statusBadge.textContent = "Completed";
+
+  window.location.href = "rating.html";
 });

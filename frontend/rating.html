@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rate Driver</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="ratingPage">
+    <section class="card">
+      <a href="rider-dashboard.html" class="secondaryBtn">← Back to Dashboard</a>
+      <h1>Rate Your Driver</h1>
+      <p>Please rate your driver and share your experience.</p>
+    </section>
+
+    <section class="card">
+      <h2>Ride Summary</h2>
+      <div class="rideSummaryGrid">
+        <div class="summaryItem">
+          <strong>Pickup:</strong>
+          <span id="ratingPickup">Not set</span>
+        </div>
+
+        <div class="summaryItem">
+          <strong>Destination:</strong>
+          <span id="ratingDestination">Not set</span>
+        </div>
+
+        <div class="summaryItem">
+          <strong>Driver:</strong>
+          <span id="driverName">Kendra M.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>How would you rate your driver?</h2>
+
+      <div class="ratingStars">
+        <button class="starBtn" data-rating="1">★</button>
+        <button class="starBtn" data-rating="2">★</button>
+        <button class="starBtn" data-rating="3">★</button>
+        <button class="starBtn" data-rating="4">★</button>
+        <button class="starBtn" data-rating="5">★</button>
+      </div>
+
+      <p id="ratingText">Select a rating</p>
+    </section>
+
+    <section class="card">
+      <h2>Share your experience</h2>
+      <textarea id="ratingComment" placeholder="Tell us about your ride..."></textarea>
+
+      <button id="submitRatingBtn" class="loginBtn">Submit Rating</button>
+      <p id="ratingMessage" class="error-message"></p>
+    </section>
+  </main>
+
+  <script src="rating.js"></script>
+</body>
+</html>
