@@ -54,7 +54,7 @@ Driver? driver1 = authentication.Register("John", "Renaldo", "JohnRenaldo@yahoo.
 Driver? driver2 = authentication.Register("Ron", "Donald", "RonDonald@yahoo.com", "Pass123", "Driver") as Driver;
 Driver? driver3 = authentication.Register("Don", "Donald", "DonDonald@yahoo.com", "Pass123", "Driver") as Driver;
 Rider? keaton = authentication.Register("Keaton", "Morales", "KeatonMorales@yahoo.com", "Pass123", "Rider") as Rider;
-Rider? kendra = authentication.Register("Kendra", "Murphy", "KendraMurphy@yahoo.com", "Pass123", "Rider") as Rider;
+Driver? kendra = authentication.Register("Kendra", "Murphy", "KendraMurphy@yahoo.com", "Pass123", "Driver") as Driver;
 Rider? ben = authentication.Register("Ben", "Nelson", "BenNelson@yahoo.com", "Pass123", "Rider") as Rider;
 Rider? caden = authentication.Register("Caden", "Walters", "CadenWalters@yahoo.com", "Pass123", "Rider") as Rider;
 Rider? ahanaf = authentication.Register("Ahanaf", "Akif", "AhanafAkif@yahoo.com", "Pass123", "Rider") as Rider;
@@ -62,10 +62,12 @@ Rider? ahanaf = authentication.Register("Ahanaf", "Akif", "AhanafAkif@yahoo.com"
 Session? sessionIdD1 = authentication.Login("JohnRenaldo@yahoo.com", "Pass123");
 Session? sessionIdD2 = authentication.Login("RonDonald@yahoo.com", "Pass123");
 Session? sessionIdD3 = authentication.Login("DonDonald@yahoo.com", "Pass123");
+Session? sessionIdD4 = authentication.Login("KendraMurphy@yahoo.com", "Pass123");
+
 
 if (driver1 != null)
 {
-    driver1.GoOnline("University of North Texas, Denton, TX", 33.2109, -97.1506);
+    driver1.GoOnline("Denton High School, Denton, TX", 33.2576, -97.1480);
     matchMaking.AddDriver(driver1);
 }
 
@@ -79,6 +81,11 @@ if (driver3 != null)
 {
     driver3.GoOnline("Golden Triangle Mall, Denton, TX", 33.1887, -97.1067);
     matchMaking.AddDriver(driver3);
+}
+if (kendra != null)
+{
+    kendra.GoOnline("University of North Texas, Denton, TX", 33.2109, -97.1506);
+    matchMaking.AddDriver(kendra);
 }
 
 
