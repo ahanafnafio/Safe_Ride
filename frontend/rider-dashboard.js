@@ -499,7 +499,10 @@ arrivedBtn.addEventListener("click", async () => {
   routeLine = new google.maps.Polyline({
     path: decodedPath,
     map: map,
-    strokeWeight: 5
+    strokeWeight: 5,
+    strokeColor: "#4285F4",
+    strokeOpacity: 1.0
+
   });
 
   const bounds = new google.maps.LatLngBounds();
