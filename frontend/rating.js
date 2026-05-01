@@ -1,4 +1,6 @@
 const driverName = document.getElementById("driverName");
+const ratingPickup = document.getElementById("ratingPickup");
+const ratingDestination = document.getElementById("ratingDestination");
 const starButtons = document.querySelectorAll(".starBtn");
 const ratingText = document.getElementById("ratingText");
 const ratingComment = document.getElementById("ratingComment");
@@ -8,7 +10,10 @@ const ratingMessage = document.getElementById("ratingMessage");
 let selectedRating = 0;
 
 const rideRequest = JSON.parse(localStorage.getItem("saferideRideRequest")) || {};
-driverName.textContent = `Driver: ${rideRequest.driver || "Not assigned"}`;
+
+driverName.textContent = rideRequest.driver || "Not assigned";
+ratingPickup.textContent = rideRequest.pickup || "Not set";
+ratingDestination.textContent = rideRequest.destination || "Not set";
 
 starButtons.forEach((button) => {
   button.addEventListener("click", () => {

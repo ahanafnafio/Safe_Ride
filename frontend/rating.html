@@ -7,12 +7,37 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="container">
+  <main class="ratingPage">
     <section class="card">
+      <a href="rider-dashboard.html" class="secondaryBtn">← Back to Dashboard</a>
       <h1>Rate Your Driver</h1>
-      <p id="driverName">Driver: Not assigned</p>
+      <p>Please rate your driver and share your experience.</p>
+    </section>
 
-      <div class="ratingStars" aria-label="Driver rating">
+    <section class="card">
+      <h2>Ride Summary</h2>
+      <div class="rideSummaryGrid">
+        <div class="summaryItem">
+          <strong>Pickup:</strong>
+          <span id="ratingPickup">Not set</span>
+        </div>
+
+        <div class="summaryItem">
+          <strong>Destination:</strong>
+          <span id="ratingDestination">Not set</span>
+        </div>
+
+        <div class="summaryItem">
+          <strong>Driver:</strong>
+          <span id="driverName">Not assigned</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>How would you rate your driver?</h2>
+
+      <div class="ratingStars">
         <button class="starBtn" data-rating="1">★</button>
         <button class="starBtn" data-rating="2">★</button>
         <button class="starBtn" data-rating="3">★</button>
@@ -21,9 +46,11 @@
       </div>
 
       <p id="ratingText">Select a rating</p>
+    </section>
 
-      <label for="ratingComment">Optional comment</label>
-      <textarea id="ratingComment" placeholder="How was your ride?"></textarea>
+    <section class="card">
+      <h2>Share your experience</h2>
+      <textarea id="ratingComment" placeholder="Tell us about your ride..."></textarea>
 
       <button id="submitRatingBtn" class="loginBtn">Submit Rating</button>
       <p id="ratingMessage" class="error-message"></p>
