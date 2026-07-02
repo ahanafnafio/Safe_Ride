@@ -21,4 +21,5 @@ The perfect use case of Saferide are those nights where you are bar hopping with
 
 Saferide also offers gig work similar to doordash, for people who enjoy driving and meeting new people.
 
-<img width="1224" height="690" alt="image" src="https://github.com/user-attachments/assets/189fd64e-2552-467c-af22-88fd693f622a" />
+<img width="1698" height="976" alt="image" src="https://github.com/user-attachments/assets/6ffd1637-478d-490b-bdb7-8f83b42e4234" />
+
