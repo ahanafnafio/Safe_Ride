@@ -16,7 +16,8 @@ Saferide is an app where you can schedule a driver to come and pick you and your
 
 The perfect use case of Saferide are those nights where you are bar hopping with friends, enjoying yourself. No longer do you have to stress about having someone missing out on the fun driving home; instead, just request a ride, and one of our drivers will be dropped off at your location (via a mastercar), and then take you and your friends to the next destination.
 
-<img width="1891" height="919" alt="image" src="https://github.com/user-attachments/assets/725a557d-1675-48d8-af05-46ea94208b48" />
+<img width="1698" height="838" alt="image" src="https://github.com/user-attachments/assets/888e5472-ff9e-48d8-ae53-d6588a65335a" />
+
 
 Saferide also offers gig work similar to doordash, for people who enjoy driving and meeting new people.
 
