@@ -7,9 +7,6 @@ https://trello.com/b/zb3SKP6f/cbknk-4-csce3444
 Caden Walters: Team Lead, Developer
 Ben Nelson, Carl Atanga, Keaton Morales, Kendra Murphy, and Ahanaf Akif Islam: Co-contributer, Developer
 
-Scrum meeting schedule:
-Fridays 2:30pm, in person
-Mondays 6:00pm, zoom @ https://us05web.zoom.us/j/9720479940?pwd=ipLKM9Lzsclw0Xp4MGaD7BXoAWGOSJ.1
 
 ## About Saferide
 Saferide is an app where you can schedule a driver to come and pick you and your car up and be taken to a location of your choosing. Think of it as a one-way uber, where you can forget about having a dedicated driver, or you can still get to and from places with impairments.
